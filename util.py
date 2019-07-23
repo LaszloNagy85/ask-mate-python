@@ -1,4 +1,4 @@
-def get_story_id(existing_data):
+def get_id(existing_data):
 
     if len(existing_data) == 0:
         return '1'
