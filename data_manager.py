@@ -29,6 +29,16 @@ def convert_readable_dates(data):
         row['submission_time'] = util.convert_epoch_to_readable(row['submission_time'])
 
 
+def delete_answer(id_):
+    remaining_answers = []
+    all_answers = get_all_data('answer')
+    for answer in all_answers:
+        if id_ != answer['question_id']:
+            remaining_answers.append(answer)
+
+    return remaining_answers
+
+
 def get_dict_of_specific_types(list_of_types, file_name):
     specific_data = []
     all_data = get_all_data(file_name)
