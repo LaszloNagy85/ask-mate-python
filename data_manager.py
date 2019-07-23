@@ -27,3 +27,14 @@ def generate_id(file_name):
 def convert_readable_dates(data):
     for row in data:
         row['submission_time'] = util.convert_epoch_to_readable(row['submission_time'])
+
+
+def delete_answer(id_):
+    remaining_answers = []
+    all_answers = get_all_data('answer')
+    for answer in all_answers:
+        if id_ != answer['question_id']:
+            remaining_answers.append(answer)
+
+    return remaining_answers
+
