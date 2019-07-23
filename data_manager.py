@@ -36,3 +36,10 @@ def get_dict_of_specific_types(list_of_types, file_name):
         specific_data.append({key: value for key, value in row.items() if key in list_of_types})
     return specific_data
 
+
+def add_data(data, file_name, data_header):
+    return connection.write_data_to_file(data, file_name, data_header)
+
+
+def update_data(data, file_name, data_header):
+    return connection.write_data_to_file(data, file_name, data_header, False)
