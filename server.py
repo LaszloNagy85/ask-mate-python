@@ -18,7 +18,7 @@ def route_question(question_id):
     print(answers)  # for testing, delete it later!
 
     return render_template('question.html',
-                           question=question,
+                           question=question[0],
                            answers=answers,
                            )
 
@@ -28,7 +28,7 @@ def route_new_answer(question_id):
     new_answer_id = data_manager.generate_id('answer')
     submission_time = util.get_epoch()
 
-    modified_answer = {
+    new_answer = {
         'id': new_answer_id,
         'submission_time': submission_time,
         'vote_number': '0',
@@ -37,8 +37,9 @@ def route_new_answer(question_id):
         'image': '',  # will be modified later
     }
 
-    print(modified_answer)  # just for check until there is an export data function
-    #  call export data function comes here
+    print(new_answer)  # just for check until there is an export data function
+    # add new answer to answers!
+    # call export data function comes here
     return redirect(f'/question/{question_id}')
 
 
