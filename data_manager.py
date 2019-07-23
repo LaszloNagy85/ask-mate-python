@@ -38,3 +38,11 @@ def delete_answer(id_):
 
     return remaining_answers
 
+
+def get_dict_of_specific_types(list_of_types, file_name):
+    specific_data = []
+    all_data = get_all_data(file_name)
+    for row in all_data:
+        specific_data.append({key: value for key, value in row.items() if key in list_of_types})
+    return specific_data
+
