@@ -27,3 +27,12 @@ def generate_id(file_name):
 def convert_readable_dates(data):
     for row in data:
         row['submission_time'] = util.convert_epoch_to_readable(row['submission_time'])
+
+
+def get_dict_of_specific_types(list_of_types, file_name):
+    specific_data = []
+    all_data = get_all_data(file_name)
+    for row in all_data:
+        specific_data.append({key: value for key, value in row.items() if key in list_of_types})
+    return specific_data
+
