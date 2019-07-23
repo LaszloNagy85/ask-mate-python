@@ -1,0 +1,26 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    {{ page_title }}
+{% endblock %}
+
+{% block content %}
+    <h1>{{ page_title }}</h1>
+
+    <br>
+
+    <form action="{{ form_url }}" method="post">
+        <input type="hidden" name="id" value="{{ question['id'] }}">
+        <p>
+            <label for="title">Question title:</label><br>
+            <input type="text" name="title" id="title" required minlength="12" maxlength="50" value="{{ question['title'] }}">
+        </p>
+        <p>
+            <label for="">Message:</label><br>
+            <textarea name="message" id="message" cols="150" rows="20" required>{{ question['message']|safe }}</textarea>
+        </p>
+        <p>
+            <button type="submit">{{ button_title }}</button>
+        </p>
+    </form>
+{% endblock %}
