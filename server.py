@@ -45,7 +45,7 @@ def route_new_answer(question_id):
 
 @app.route('/')
 def route_list_of_questions():
-    data = data_manager.get_dict_of_specific_types(['id', 'title'], 'question')
+    data = reversed(data_manager.get_dict_of_specific_types(['id', 'title'], 'question'))
     return render_template('list.html', data=data)
 
 
