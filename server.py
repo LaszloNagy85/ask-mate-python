@@ -43,6 +43,12 @@ def route_new_answer(question_id):
     return redirect(f'/question/{question_id}')
 
 
+@app.route('/')
+def route_list_of_questions():
+    data = data_manager.get_dict_of_specific_types(['id', 'title'], 'question')
+    return render_template('list.html', data=data)
+
+
 if __name__ == '__main__':
     app.run(
         port=8000,
