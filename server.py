@@ -11,6 +11,9 @@ def route_question(question_id):
     question = data_manager.get_selected_data('question', question_id, 'id')  # note to self: reconsider this!
     answers = data_manager.get_selected_data('answer', question_id, 'question_id')
 
+    data_manager.convert_readable_dates(question)
+    data_manager.convert_readable_dates(answers)
+
     print(question)  # for testing, delete it later!
     print(answers)  # for testing, delete it later!
 
