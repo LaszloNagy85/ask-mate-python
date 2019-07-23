@@ -22,3 +22,8 @@ def get_all_data_of_one_type(type_, file_name):
 def generate_id(file_name):
     all_data = connection.get_all_data_from_file(file_name)
     return util.get_id(all_data)
+
+
+def convert_readable_dates(data):
+    for row in data:
+        row['submission_time'] = util.convert_epoch_to_readable(row['submission_time'])
