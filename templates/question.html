@@ -15,4 +15,12 @@
         <p>{{ answer.image }}</p>
     {% endfor %}
 
+    <form action="/question/{{ question.id }}/new-answer" method="post">
+        <p>
+            <label for="message">Add new answer</label><br>
+            <textarea id="message" name="message"></textarea>
+        </p>
+        <button type="submit">Save answer</button>
+    </form>
+
 {% endblock %}
