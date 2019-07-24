@@ -7,6 +7,9 @@ app = Flask(__name__)
 
 DATA_HEADER_QUESTION = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
 DATA_HEADER_ANSWER = ['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
+SORT_OPTIONS = ['submission_time', 'view_number', 'vote_number', 'title']
+SORT_TITLES = ['Submission time', 'View number', 'Vote number', 'Title']
+
 
 @app.route('/question/<question_id>')
 def route_question(question_id):
@@ -45,10 +48,24 @@ def route_new_answer(question_id):
     return redirect(f'/question/{question_id}')
 
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def route_list_of_questions():
-    data = reversed(data_manager.get_dict_of_specific_types(['id', 'title'], 'question'))
-    return render_template('list.html', data=data)
+    sort_by = 'title'
+    direction = ''
+    if request.method == 'POST':
+        sort_by = request.form.get('sort_by')
+        direction = request.form.get('direction')
+    data = data_manager.get_sorted_data('question', sort_by, direction)
+    data = data_manager.get_dict_of_specific_types(['id', 'title'], data)
+    return render_template('list.html',
+                               data=data,
+                               sort_by=sort_by,
+                               direction=direction,
+                               sort_options=SORT_OPTIONS,
+                               sort_titles=SORT_TITLES,
+                               directions=['Ascending', 'Descending'],
+                               reverse_options=['', 'True'])
+
 
 
 @app.route('/add-question', methods=['GET', 'POST'])
