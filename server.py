@@ -100,20 +100,17 @@ def route_question_add():
         return redirect(f'/question/{generated_id}')
 
     return render_template('add-question.html',
-                           question={},
+                           question=[{}],
                            form_url=url_for('route_question_add'),
                            page_title='Ask a question',
                            button_title='Save question',
                            )
 
 
-@app.route('/question/<question_id>/edit')
+@app.route('/question/<question_id>/edit', methods=['GET', 'POST'])
 def route_question_update(question_id):
     FIRST = 0
     if request.method == 'POST':
-        if request.form.get('id') != question_id:
-            raise ValueError('The received id is not valid!')
-
         stored_data = data_manager.get_selected_data('question', question_id, 'id')
         question = {
             'id': question_id,
@@ -126,10 +123,9 @@ def route_question_update(question_id):
         }
 
         data_manager.update_data(question, 'question', DATA_HEADER_QUESTION)
-        return redirect('/question/<question_id>')
+        return redirect(f'/question/{question_id}')
 
     question = data_manager.get_selected_data('question', question_id, 'id')
-    print(question)
 
     return render_template('add-question.html',
                            question=question,
