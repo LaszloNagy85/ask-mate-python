@@ -4,28 +4,41 @@
 
 {% block content %}
 
-    <h1>{{ question.title }}</h1>
+    <div>
+        <h1>{{ question.title }}</h1>
         <p>Submission time: {{ question.submission_time }} Views: {{ question.view_number }} Votes: {{ question.vote_number }}</p>
         <p style="white-space: pre-line">{{ question.message.replace('<br>', '\n') }}</p>
-        <p><img src="/static/images/{{ question.image }}"></p>
+        {% if question.image %}
+            <p><img src="/static/images/{{ question.image }}"></p>
+        {% endif %}
+        <p><a href="/question/{{ question.id }}/edit">Edit question</a></p>
+    </div>
 
-    {% for answer in answers %}
+    <div>
+        {% for answer in answers %}
         <p>Submission time: {{ answer.submission_time }} Votes: {{ answer.vote_number }}</p>
         <p style="white-space: pre-line">{{ answer.message.replace('<br>', '\n') }}</p>
-        <p><img src="/static/images/{{ answer.image }}"></p>
-    {% endfor %}
+        {% if answer.image %}
+            <p><img src="/static/images/{{ answer.image }}"></p>
+        {% endif %}
+        {% endfor %}
+    </div>
 
-    <form action={{ form_url }} method="post" enctype="multipart/form-data">
+    <div>
+        <form action="{{ form_url }}" method="post" enctype="multipart/form-data">
         <p>
             <label for="message">Add new answer</label><br>
-            <textarea id="message" name="message" required></textarea>
+            <textarea id="message" name="message" required cols="80" rows="10"></textarea>
         </p>
         <p>
             <label for="image">Upload picture</label>
             <input id="image" name="image" type="file" accept="image/png, image/jpeg">
         </p>
+
         <button type="submit">{{ button_title }}</button>
-    </form>
+
+        </form>
+    </div>
 
     <p><a href="/">Back to Questions</a></p>
 

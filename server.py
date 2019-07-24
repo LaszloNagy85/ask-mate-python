@@ -37,8 +37,8 @@ def route_new_answer(question_id):
     submission_time = util.get_epoch()
     if 'image' in request.files:
         image = request.files['image']
-        print(image)
-        image.save(os.path.join(app.config['UPLOAD_FOLDER'], image.filename))
+        if image.filename != "":
+            image.save(os.path.join(app.config['UPLOAD_FOLDER'], image.filename))
     else:
         image = ''
 
@@ -48,7 +48,7 @@ def route_new_answer(question_id):
         'vote_number': '0',
         'question_id': question_id,
         'message': request.form.get('message'),
-        'image': image if not image else image.filename,
+        'image': image.filename if image else None,
     }
 
     data_manager.add_data(new_answer, 'answer', DATA_HEADER_ANSWER)
@@ -79,6 +79,13 @@ def route_list_of_questions():
 def route_question_add():
     generated_id = data_manager.generate_id('question')
     if request.method == 'POST':
+        if 'image' in request.files:
+            image = request.files['image']
+            if image.filename != "":
+                image.save(os.path.join(app.config['UPLOAD_FOLDER'], image.filename))
+        else:
+            image = ''
+
         question = {
             'id': generated_id,
             'submission_time': util.get_epoch(),
@@ -86,7 +93,7 @@ def route_question_add():
             'vote_number': '0',
             'title': request.form.get('title'),
             'message': request.form.get('message'),
-            'image': request.form.get('image')
+            'image': image.filename if image else None,
         }
 
         data_manager.add_data(question, 'question', DATA_HEADER_QUESTION)
