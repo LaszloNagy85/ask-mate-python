@@ -53,3 +53,13 @@ def add_data(data, file_name, data_header):
 
 def update_data(data, file_name, data_header):
     return connection.write_data_to_file(data, file_name, data_header, False)
+
+
+def get_sorted_data(file_name, sort_by, reverse=False):
+    data_to_sort = get_all_data(file_name)
+    if sort_by == 'title':
+        is_int = str
+    else:
+        is_int = int
+    sorted_data = sorted(data_to_sort, key=lambda x: is_int(x[sort_by]), reverse=reverse)
+    return sorted_data
