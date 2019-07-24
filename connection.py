@@ -21,10 +21,19 @@ def write_data_to_file(data, file_name, data_header, append=True):
 
         for row in existing_data:
             if not append:
-                if row['id'] == data['id']:
-                    row = data
+                if data is list:
+                    for data_row in data:
+                        if row['id'] == data_row['id']:
+                            row = data_row
+                else:
+                    if row['id'] == data['id']:
+                        row = data
 
             writer.writerow(row)
 
-        if append:
-            writer.writerow(data)
+            if append:
+                if data is list:
+                    for data_row in data:
+                        writer.writerow(data_row)
+                else:
+                    writer.writerow(data_row)
