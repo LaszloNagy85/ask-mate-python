@@ -17,4 +17,26 @@
             </p>
             <hr>
         {% endfor %}
+
+    <form action="/" method="POST">
+        <label for="sort"> Sort Questions by:</label>
+        <select id="sort" name="sort_by">
+            {% for i in range(4) %}
+                <option {%  if sort_by == sort_options[i] %}selected{% endif %}
+                        value={{ sort_options[i] }}>{{ sort_titles[i] }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="direction">Order</label>
+        <select id="direction" name="direction">
+            {% for j in range(2) %}
+                <option {% if reverse_options[j] == direction %}selected{% endif %}
+                        value="{{ reverse_options[j] }}">{{ directions[j] }}</option>
+            {% endfor %}
+
+        </select>
+        <p>
+            <button type="submit">Sort it!</button>
+        </p>
+    </form>
 {% endblock %}

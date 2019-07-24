@@ -50,10 +50,9 @@ def delete_question(id_):
     return remaining_questions, remaining_answers
 
 
-def get_dict_of_specific_types(list_of_types, file_name):
+def get_dict_of_specific_types(list_of_types, data):
     specific_data = []
-    all_data = get_all_data(file_name)
-    for row in all_data:
+    for row in data:
         specific_data.append({key: value for key, value in row.items() if key in list_of_types})
     return specific_data
 
@@ -66,11 +65,12 @@ def update_data(data, file_name, data_header):
     return connection.write_data_to_file(data, file_name, data_header, False)
 
 
-def get_sorted_data(file_name, sort_by, reverse=False):
+def get_sorted_data(file_name, sort_by, direction):
     data_to_sort = get_all_data(file_name)
     if sort_by == 'title':
         is_int = str
     else:
         is_int = int
-    sorted_data = sorted(data_to_sort, key=lambda x: is_int(x[sort_by]), reverse=reverse)
+    direction = bool(direction)
+    sorted_data = sorted(data_to_sort, key=lambda x: is_int(x[sort_by]), reverse=direction)
     return sorted_data
