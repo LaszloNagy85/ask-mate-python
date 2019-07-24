@@ -86,7 +86,7 @@ def route_question_add():
             'vote_number': '0',
             'title': request.form.get('title'),
             'message': request.form.get('message'),
-            'image': ''
+            'image': request.form.get('image')
         }
 
         data_manager.add_data(question, 'question', DATA_HEADER_QUESTION)
@@ -97,6 +97,38 @@ def route_question_add():
                            form_url=url_for('route_question_add'),
                            page_title='Ask a question',
                            button_title='Save question',
+                           )
+
+
+@app.route('/question/<question_id>/edit')
+def route_question_update(question_id):
+    FIRST = 0
+    if request.method == 'POST':
+        if request.form.get('id') != question_id:
+            raise ValueError('The received id is not valid!')
+
+        stored_data = data_manager.get_selected_data('question', question_id, 'id')
+        question = {
+            'id': question_id,
+            'submission_time': util.get_epoch(),
+            'view_number': stored_data[FIRST]['view_number'],
+            'vote_number': stored_data[FIRST]['vote_number'],
+            'title': request.form.get('title'),
+            'message': request.form.get('message'),
+            'image': request.form.get('image')
+        }
+
+        data_manager.update_data(question, 'question', DATA_HEADER_QUESTION)
+        return redirect('/question/<question_id>')
+
+    question = data_manager.get_selected_data('question', question_id, 'id')
+    print(question)
+
+    return render_template('add-question.html',
+                           question=question,
+                           form_url=url_for('route_question_update', question_id=question_id),
+                           page_title='Edit a question',
+                           button_title='Update question',
                            )
 
 
