@@ -7,18 +7,22 @@
     <h1>{{ question.title }}</h1>
         <p>Submission time: {{ question.submission_time }} Views: {{ question.view_number }} Votes: {{ question.vote_number }}</p>
         <p style="white-space: pre-line">{{ question.message.replace('<br>', '\n') }}</p>
-        <p><img src="/static/{{ question.image }}"></p>
+        <p><img src="/static/images/{{ question.image }}"></p>
 
     {% for answer in answers %}
         <p>Submission time: {{ answer.submission_time }} Votes: {{ answer.vote_number }}</p>
         <p style="white-space: pre-line">{{ answer.message.replace('<br>', '\n') }}</p>
-        <p><img src="/static/{{ answer.image }}"></p>
+        <p><img src="/static/images/{{ answer.image }}"></p>
     {% endfor %}
 
-    <form action={{ form_url }} method="post">
+    <form action={{ form_url }} method="post" enctype="multipart/form-data">
         <p>
             <label for="message">Add new answer</label><br>
-            <textarea id="message" name="message"></textarea>
+            <textarea id="message" name="message" required></textarea>
+        </p>
+        <p>
+            <label for="image">Upload picture</label>
+            <input id="image" name="image" type="file" accept="image/png, image/jpeg">
         </p>
         <button type="submit">{{ button_title }}</button>
     </form>

@@ -2,9 +2,10 @@ from flask import Flask, render_template, request, redirect, url_for
 
 import data_manager
 import util
+import os
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = "/static"
+app.config['UPLOAD_FOLDER'] = "static/images"
 
 
 DATA_HEADER_QUESTION = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
@@ -34,6 +35,12 @@ def route_question(question_id):
 def route_new_answer(question_id):
     new_answer_id = data_manager.generate_id('answer')
     submission_time = util.get_epoch()
+    if 'image' in request.files:
+        image = request.files['image']
+        print(image)
+        image.save(os.path.join(app.config['UPLOAD_FOLDER'], image.filename))
+    else:
+        image = ''
 
     new_answer = {
         'id': new_answer_id,
@@ -41,7 +48,7 @@ def route_new_answer(question_id):
         'vote_number': '0',
         'question_id': question_id,
         'message': request.form.get('message'),
-        'image': '',  # will be modified later
+        'image': image if not image else image.filename,
     }
 
     data_manager.add_data(new_answer, 'answer', DATA_HEADER_ANSWER)
