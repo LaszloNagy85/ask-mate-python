@@ -39,6 +39,17 @@ def delete_answer(id_):
     return remaining_answers
 
 
+def delete_question(id_):
+    remaining_questions = []
+    all_questions = get_all_data('question')
+    for question in all_questions:
+        if id_ != question['id']:
+            remaining_questions.append(question)
+        else:
+            remaining_answers = delete_answer(question['id'])
+    return remaining_questions, remaining_answers
+
+
 def get_dict_of_specific_types(list_of_types, file_name):
     specific_data = []
     all_data = get_all_data(file_name)
