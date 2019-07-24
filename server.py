@@ -11,6 +11,7 @@ SORT_OPTIONS = ['submission_time', 'view_number', 'vote_number', 'title']
 SORT_TITLES = ['Submission time', 'View number', 'Vote number', 'Title']
 
 
+
 @app.route('/question/<question_id>')
 def route_question(question_id):
     question = data_manager.get_selected_data('question', question_id, 'id')  # note to self: reconsider this!
@@ -18,9 +19,6 @@ def route_question(question_id):
 
     data_manager.convert_readable_dates(question)
     data_manager.convert_readable_dates(answers)
-
-    print(question)  # for testing, delete it later!
-    print(answers)  # for testing, delete it later!
 
     return render_template('question.html',
                            question=question[0],
@@ -42,9 +40,8 @@ def route_new_answer(question_id):
         'image': '',  # will be modified later
     }
 
-    print(new_answer)  # just for check until there is an export data function
-    # add new answer to answers!
-    # call export data function comes here
+    data_manager.add_data(new_answer, 'answer', DATA_HEADER_ANSWER)
+
     return redirect(f'/question/{question_id}')
 
 

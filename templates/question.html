@@ -6,13 +6,13 @@
 
     <h1>{{ question.title }}</h1>
         <p>Submission time: {{ question.submission_time }} Views: {{ question.view_number }} Votes: {{ question.vote_number }}</p>
-        <p>{{ question.message }}</p>
-        <p>{{ question.image }}</p>
+        <p style="white-space: pre-line">{{ question.message.replace('<br>', '\n') }}</p>
+        <p><img src="/{{ question.image }}"></p>
 
     {% for answer in answers %}
         <p>Submission time: {{ answer.submission_time }} Votes: {{ answer.vote_number }}</p>
-        <p>{{ answer.message }}</p>
-        <p>{{ answer.image }}</p>
+        <p style="white-space: pre-line">{{ answer.message.replace('<br>', '\n') }}</p>
+        <p><img src="/{{ answer.image }}"></p>
     {% endfor %}
 
     <form action="/question/{{ question.id }}/new-answer" method="post">
@@ -22,5 +22,7 @@
         </p>
         <button type="submit">Save answer</button>
     </form>
+
+    <p><a href="/">Back to Questions</a></p>
 
 {% endblock %}
