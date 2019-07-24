@@ -36,4 +36,4 @@ def write_data_to_file(data, file_name, data_header, append=True):
                     for data_row in data:
                         writer.writerow(data_row)
                 else:
-                    writer.writerow(data_row)
+                    writer.writerow(row)
