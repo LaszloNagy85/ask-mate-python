@@ -4,12 +4,13 @@ import data_manager
 import util
 
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = "/static"
+
 
 DATA_HEADER_QUESTION = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
 DATA_HEADER_ANSWER = ['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
 SORT_OPTIONS = ['submission_time', 'view_number', 'vote_number', 'title']
 SORT_TITLES = ['Submission time', 'View number', 'Vote number', 'Title']
-
 
 
 @app.route('/question/<question_id>')
@@ -23,6 +24,9 @@ def route_question(question_id):
     return render_template('question.html',
                            question=question[0],
                            answers=answers,
+                           form_url=url_for('route_new_answer', question_id=question_id),
+                           page_title='Display a question',
+                           button_title='Save new answer',
                            )
 
 
@@ -55,14 +59,13 @@ def route_list_of_questions():
     data = data_manager.get_sorted_data('question', sort_by, direction)
     data = data_manager.get_dict_of_specific_types(['id', 'title'], data)
     return render_template('list.html',
-                               data=data,
-                               sort_by=sort_by,
-                               direction=direction,
-                               sort_options=SORT_OPTIONS,
-                               sort_titles=SORT_TITLES,
-                               directions=['Ascending', 'Descending'],
-                               reverse_options=['', 'True'])
-
+                           data=data,
+                           sort_by=sort_by,
+                           direction=direction,
+                           sort_options=SORT_OPTIONS,
+                           sort_titles=SORT_TITLES,
+                           directions=['Ascending', 'Descending'],
+                           reverse_options=['', 'True'])
 
 
 @app.route('/add-question', methods=['GET', 'POST'])
