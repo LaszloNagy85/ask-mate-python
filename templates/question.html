@@ -21,7 +21,7 @@
     <div>
         {% for answer in answers %}
         <div>Submission time: {{ answer.submission_time }} Votes: {{ answer.vote_number }}
-            <form style="display: inline-block" action="answer/{{answeriid}}/delete" method="post">
+            <form style="display: inline-block" action="/answer/{{answer.id}}/delete" method="post">
                 <button type="submit" name="delete_answer">Delete Answer</button>
             </form>
         </div>

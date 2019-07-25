@@ -28,3 +28,11 @@ def write_data_to_file(data, file_name, data_header, append=True):
 
         if append:
             writer.writerow(data)
+
+
+def write_remaining_data_to_file(data, file_name, data_header):
+    with open(f"sample_data/{file_name}.csv", 'w', newline='', encoding='utf-8') as csvfile:
+        writer = csv.DictWriter(csvfile, data_header)
+        writer.writeheader()
+        for row in data:
+            writer.writerow(row)
