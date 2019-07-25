@@ -20,6 +20,11 @@
         <p>
             <label for="image">Upload picture</label>
             <input id="image" name="image" type="file" accept="image/png, image/jpeg">
+            {%  if question[0]['image'] == '' %}
+                No file uploaded
+            {% else %}
+                Uploaded file: {{ question[0]['image'] }}
+            {%  endif %}
         </p>
         <p>
             <button type="submit">{{ button_title }}</button>
