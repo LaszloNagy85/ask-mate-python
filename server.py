@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for
 import data_manager
 import util
 import os
+import connection
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = "static/images"
@@ -162,8 +163,25 @@ def vote_question(question_id, type):
     return redirect(f"/question/{question_id}")
 
 
+@app.route('/question/<question_id>/delete/', methods=['POST'])
+def route_delete_question(question_id):
+    if request.method == 'POST':
+        data_manager.delete_question(question_id)
+
+        return redirect('/')
+
+
+@app.route('/answer/<answer_id>/delete/', methods=['POST'])
+def route_delete_answer(answer_id):
+    if request.method == 'POST':
+        question_id = data_manager.get_selected_data('test_answers', answer_id, 'id')[0]['question_id']
+        data_manager.delete_answer(answer_id, 'id')
+
+    return redirect(f'/question/{question_id}')
+
+
 if __name__ == '__main__':
     app.run(
         port=8000,
-        debug=True,
+        debug=False,
     )

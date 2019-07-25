@@ -36,7 +36,7 @@ def delete_answer(id_, id_key):
         if id_ != answer[id_key]:
             remaining_answers.append(answer)
 
-    return remaining_answers
+    connection.write_remaining_data_to_file(remaining_answers, 'answer', connection.DATA_HEADER_ANSWER)
 
 
 def delete_question(id_):
@@ -46,8 +46,8 @@ def delete_question(id_):
         if id_ != question['id']:
             remaining_questions.append(question)
         else:
-            remaining_answers = delete_answer(id_, 'question_id')
-    return remaining_questions, remaining_answers
+            delete_answer(id_, 'question_id')
+    connection.write_remaining_data_to_file(remaining_questions, 'question', connection.DATA_HEADER_QUESTION)
 
 
 def get_dict_of_specific_types(list_of_types, data):
