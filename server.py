@@ -68,10 +68,10 @@ def route_new_answer(question_id):
     return redirect(f'/question/{question_id}')
 
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
 def route_list_of_questions():
     sort_by = 'submission_time'
-    direction = 'True'
+    direction = 'desc'
     if 'sort_by' in request.args:
         sort_by = request.args.get('sort_by')
     if 'direction' in request.args:
@@ -79,11 +79,9 @@ def route_list_of_questions():
     data = data_manager.get_sorted_data('question', sort_by, direction)
     data = data_manager.get_dict_of_specific_types(['id', 'title'], data)
     answers = data_manager.get_all_data('answer')
-    questions = data_manager.get_all_data('question')
     return render_template('list.html',
-                           data=data,
+                           questions=data,
                            answers=answers,
-                           questions=questions,
                            sort_by=sort_by,
                            direction=direction,
                            sort_options=SORT_OPTIONS,
