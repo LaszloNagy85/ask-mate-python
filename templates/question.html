@@ -5,22 +5,33 @@
 {% block content %}
 
     <div>
-        <h1>{{ question.title }}</h1>
+        <h1 style="display: inline-flex">{{ question.title }}
+            <form action="/question/{{question.id}}/delete" method="post">
+                <button type="submit" name="delete">Delete Question</button>
+            </form>
+            <form>
+                <input type="button" value="Edit question" onclick="window.location.href='/question/{{ question.id }}/edit'"/>
+            </form>
+
+        </h1>
         <p>Submission time: {{ question.submission_time }} Views: {{ question.view_number }} Votes: {{ question.vote_number }}</p>
-        <p style="white-space: pre-line">{{ question.message.replace('<br>', '\n') }}</p>
-        {% if question.image %}
-            <p><img src="/static/images/{{ question.image }}"></p>
-        {% endif %}
-        <p><a href="/question/{{ question.id }}/edit">Edit question</a></p>
         <p>
             <a href="/vote_question/{{ question.id }}/up"><img src="/static/images/arrow_up.png" width="20" height="20" alt=""></a>
             <a href="/vote_question/{{ question.id }}/down"><img src="/static/images/arrow_down.png" width="20" height="20" alt=""></a>
         </p>
+        <p style="white-space: pre-line">{{ question.message.replace('<br>', '\n') }}</p>
+        {% if question.image %}
+            <p><img src="/static/images/{{ question.image }}"></p>
+        {% endif %}
     </div>
 
     <div>
         {% for answer in answers %}
-        <p>Submission time: {{ answer.submission_time }} Votes: {{ answer.vote_number }}</p>
+        <div>Submission time: {{ answer.submission_time }} Votes: {{ answer.vote_number }}
+            <form style="display: inline-block" action="answer/{{answeriid}}/delete" method="post">
+                <button type="submit" name="delete_answer">Delete Answer</button>
+            </form>
+        </div>
         <p style="white-space: pre-line">{{ answer.message.replace('<br>', '\n') }}</p>
         {% if answer.image %}
             <p><img src="/static/images/{{ answer.image }}"></p>

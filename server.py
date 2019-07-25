@@ -113,6 +113,14 @@ def route_question_update(question_id):
     FIRST = 0
     if request.method == 'POST':
         stored_data = data_manager.get_selected_data('question', question_id, 'id')
+        if request.method == 'POST':
+            if 'image' in request.files:
+                image = request.files['image']
+                if image.filename != "":
+                    image.save(os.path.join(app.config['UPLOAD_FOLDER'], image.filename))
+            else:
+                image = ''
+
         question = {
             'id': question_id,
             'submission_time': util.get_epoch(),
@@ -120,7 +128,7 @@ def route_question_update(question_id):
             'vote_number': stored_data[FIRST]['vote_number'],
             'title': request.form.get('title'),
             'message': request.form.get('message'),
-            'image': request.form.get('image')
+            'image': image.filename if image else stored_data[FIRST]['image']
         }
 
         data_manager.update_data(question, 'question', DATA_HEADER_QUESTION)
