@@ -34,7 +34,8 @@ def route_question(question_id):
 @app.route('/question/counted/<question_id>/')
 def route_question_counted(question_id):
     question = data_manager.get_selected_data('question', question_id, 'id')
-    if str(request.referrer) == 'http://127.0.0.1:8000/':
+    url = str(request.referrer)
+    if url == 'http://127.0.0.1:8000/' or '?sort_by=' in url:
         view_number = int(question[0]['view_number'])
         view_number += 1
         question[0]['view_number'] = view_number
@@ -79,6 +80,7 @@ def route_list_of_questions():
     data = data_manager.get_sorted_data('question', sort_by, direction)
     data = data_manager.get_dict_of_specific_types(['id', 'title'], data)
     answers = data_manager.get_all_data('answer')
+
     return render_template('list.html',
                            questions=data,
                            answers=answers,
