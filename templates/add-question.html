@@ -11,11 +11,11 @@
         <input type="hidden" name="id" value="{{ question['id'] }}">
         <p>
             <label for="title">Question title:</label><br>
-            <input type="text" name="title" id="title" required minlength="12" maxlength="150" value="{{ question[0]['title'] }}">
+            <input type="text" size="75" name="title" id="title" required minlength="12" maxlength="150" value="{{ question[0]['title'] }}">
         </p>
         <p>
             <label for="message">Message:</label><br>
-            <textarea name="message" id="message" cols="150" rows="20" required>{{ question[0]['message']|safe }}</textarea>
+            <textarea name="message" id="message" rows="20" cols="118" required>{{ question[0]['message']|safe }}</textarea>
         </p>
         <p>
             <label for="image">Upload picture</label>
