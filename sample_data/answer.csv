@@ -1,5 +1,92 @@
 id,submission_time,vote_number,question_id,message,image
 0,1493398154,4,0,You need to use brackets: my_list = [],
 1,1493088154,35,0,Look it up in the Python docs,
-2,1563990885,0,1,maybe this time,q_and_a.jpg
-3,1563991313,0,1,s-jdgn.kjsmdv,
+2,1564077043,0,3,you would need a RunspacePool to open multiple threads... Here is a hint how to ,
+3,1564077085,0,3,make certain your queries are hitting db index(s) ... if not jack up your db to make this happen ... if possible assure your db is run entirely in RAM to speed it up ... is your db server on a remote machine ... is the current slowness possibly due to IO ? if so you could clone the entire remote db into a local db server and run your sql again that local clone – Scott Stensland,
+4,1564077115,0,3,"It doesnt really matter about asynchronous threads, You will need to understand sql query plans, bottlenecks and ad deadlocks etc... If you use any third party application, it wont have base effect on query performance. Important to understand deadlocks. Framework limitations has to be dealt to understand issue further. – Ven",
+5,1564077148,0,3,"I am PS expert, but looking at your script it seems you are connecting to DB for every query? If so there is huge overhead, you should keep the connection live in the thread once if possible – Tarun Lalwani",
+6,1564077190,0,3,"Try: PSTreadJob from the PowerShell gallery, it runs concurrent jobs based on threads rather than processes – iRon",
+7,1564078443,0,4,"for ios to implement use this code if you are viewing the .html or .pdf file it hide the address bar call this function getFileExtension from your code.
+
+function getFileExtension(filename) {
+           var fileName = filename.split('.').pop();
+           if (fileName == 'pdf')
+           {
+               viewLinkpdf(filename)
+           }
+           else 
+           {
+               viewLink(filename)
+           }
+       }
+       function viewLink(filepath) {
+            var url = (filepath.match('http')) ? filepath : 'http://' + filepath;
+            var win = window.open( url, ""_blank"", ""location=no"" );
+       }
+
+function viewLinkpdf(filepath) {
+           var url = (filepath.match('http')) ? filepath : 'http://' + filepath;
+            window.open(encodeURI('https://docs.google.com/gview?embedded=true&url='+url), '_blank', 'location=no,EnableViewPortScale=yes');
+       }
+similar like for android but very minor changes are there
+
+function viewLinkpdf(filepath) {
+        var url = (filepath.match('http')) ? filepath : 'http://' + filepath;
+        window.open(encodeURI('https://docs.google.com/gview?embedded=true&url='+url), '_blank', 'location=no,EnableViewPortScale=yes');
+    }
+    function getFileExtension(filename) {
+        var fileName = filename.split('.').pop();
+        if (fileName == 'pdf')
+        {
+            viewLinkpdf(filename)
+        }
+        else 
+        {
+            viewLink(filename)
+        }
+    }
+    function viewLink(filepath) {
+        var url = (filepath.match('http')) ? filepath : 'http://' + filepath;
+        var options = {
+            location: 'no',
+            clearcache: 'yes',
+            toolbar: 'no'
+        };
+        $cordovaInAppBrowser.open(url, '_blank', options)
+        .then(function (event) {
+            // success
+        })
+        .catch(function (event) {
+            // error
+        });
+    }
+i place both the code here might be its repeated catch it which you want. I hope this will help you.
+
+",
+8,1564078469,0,4,"According to
+
+https://cordova.apache.org/docs/en/latest/reference/cordova-plugin-inappbrowser/
+
+set toolbar=no
+
+var dataref = cordova.InAppBrowser.open(url, target, options)<--------pass to this place
+toolbar: set to yes or no to turn the toolbar on or off for the InAppBrowser (defaults to yes)",
+9,1564078686,0,5,"You may try to changing to 
+val wireMockServer = new WireMockServer(options().proxyVia(PROXY_HOST,PROXY_PORT))
+as stated here http://wiremock.org/docs/proxying/.
+
+Are you testing with a put request? you may try to change
+wireMockServer.stubFor(put(anyUrl())...) 
+to a 
+wireMockServer.stubFor(post(anyUrl())...) 
+or
+wireMockServer.stubFor(get(anyUrl())...)
+
+Are you using HTTPS? it may need aditional configuration. 
+Also, try adding a header with at least the content and a body compatible with content setting to the request and response both.
+
+",
+10,1564079200,0,6,"You can specify your own TypeScript folder path in your settings.json where you can specify your own *.d.ts files using the typescript.tsdk option.
+
+{
+  ""typescript.tsdk"": ""node_modules/typescript/lib""",
