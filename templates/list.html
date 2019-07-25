@@ -11,10 +11,23 @@
     <a href="/add-question">Ask a question</a>
     <br>
     <hr>
-        {% for row in data %}
+        {% for question in questions %}
             <p>
-                <a href="/question/counted/{{ row['id'] }}">{{ row['title'] }}</a>
+                <a href="/question/counted/{{ question['id'] }}">{{ question['title'] }}</a>
             </p>
+                <details>
+
+                <summary>Show Answers</summary>
+
+                    {% for answer in answers %}
+                        {% if question.id == answer.question_id %}
+                            <p>
+                                <span style="padding-left: 2em">{{answer.message}}</span>
+                            </p>
+                        {% endif %}
+                    {% endfor %}
+
+            </details>
             <hr>
         {% endfor %}
 

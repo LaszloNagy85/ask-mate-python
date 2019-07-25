@@ -30,6 +30,7 @@ def route_question(question_id):
                            button_title='Save new answer',
                            )
 
+
 @app.route('/question/counted/<question_id>/')
 def route_question_counted(question_id):
     question = data_manager.get_selected_data('question', question_id, 'id')
@@ -40,7 +41,6 @@ def route_question_counted(question_id):
         data_manager.update_data(question[0], 'question', DATA_HEADER_QUESTION)
 
     return redirect(f'/question/{question_id}')
-
 
 
 @app.route('/question/<question_id>/new-answer', methods=['POST'])
@@ -78,8 +78,12 @@ def route_list_of_questions():
         direction = request.args.get('direction')
     data = data_manager.get_sorted_data('question', sort_by, direction)
     data = data_manager.get_dict_of_specific_types(['id', 'title'], data)
+    answers = data_manager.get_all_data('answer')
+    questions = data_manager.get_all_data('question')
     return render_template('list.html',
                            data=data,
+                           answers=answers,
+                           questions=questions,
                            sort_by=sort_by,
                            direction=direction,
                            sort_options=SORT_OPTIONS,
@@ -156,14 +160,32 @@ def route_question_update(question_id):
                            )
 
 
-@app.route('/vote_question/<question_id>/<type>')
-def vote_question(question_id, type):
-    data_manager.save_vote(question_id, type, DATA_HEADER_QUESTION)
+@app.route('/vote/<file_name>/<question_id>/<vote_type>/<answer_id>')
+def vote(file_name, question_id, vote_type, answer_id):
+    header = DATA_HEADER_QUESTION if answer_id == 'None' else DATA_HEADER_ANSWER
+    data_manager.save_vote(file_name, question_id, vote_type, header, answer_id)
     return redirect(f"/question/{question_id}")
+
+
+@app.route('/question/<question_id>/delete/', methods=['POST'])
+def route_delete_question(question_id):
+    if request.method == 'POST':
+        data_manager.delete_question(question_id)
+
+        return redirect('/')
+
+
+@app.route('/answer/<answer_id>/delete/', methods=['POST'])
+def route_delete_answer(answer_id):
+    if request.method == 'POST':
+        question_id = data_manager.get_selected_data('answer', answer_id, 'id')[0]['question_id']
+        data_manager.delete_answer(answer_id, 'id')
+
+    return redirect(f'/question/{question_id}')
 
 
 if __name__ == '__main__':
     app.run(
         port=8000,
-        debug=True,
+        debug=False,
     )

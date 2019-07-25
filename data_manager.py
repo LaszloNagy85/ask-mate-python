@@ -29,14 +29,14 @@ def convert_readable_dates(data):
         row['submission_time'] = util.convert_epoch_to_readable(row['submission_time'])
 
 
-def delete_answer(id_):
+def delete_answer(id_, id_key):
     remaining_answers = []
     all_answers = get_all_data('answer')
     for answer in all_answers:
-        if id_ != answer['question_id']:
+        if id_ != answer[id_key]:
             remaining_answers.append(answer)
 
-    return remaining_answers
+    connection.write_remaining_data_to_file(remaining_answers, 'answer', connection.DATA_HEADER_ANSWER)
 
 
 def delete_question(id_):
@@ -46,8 +46,8 @@ def delete_question(id_):
         if id_ != question['id']:
             remaining_questions.append(question)
         else:
-            remaining_answers = delete_answer(question['id'])
-    return remaining_questions, remaining_answers
+            delete_answer(id_, 'question_id')
+    connection.write_remaining_data_to_file(remaining_questions, 'question', connection.DATA_HEADER_QUESTION)
 
 
 def get_dict_of_specific_types(list_of_types, data):
@@ -79,12 +79,14 @@ def get_sorted_data(file_name, sort_by, direction):
     return sorted_data
 
 
-def save_vote(question_id, type, data_header):
-    existing_votes = connection.get_all_data_from_file('question')
+def save_vote(file_name, question_id, vote_type, data_header, answer_id):
+    existing_votes = connection.get_all_data_from_file(file_name)
+    voted_id = question_id if answer_id == 'None' else answer_id
     for row in existing_votes:
-        if row['id'] == question_id:
-            if type == 'up':
+        if row['id'] == voted_id:
+            if vote_type == 'up':
                 row['vote_number'] = str(int(row['vote_number']) + 1) if row['vote_number'] else 1
             else:
                 row['vote_number'] = str(int(row['vote_number']) - 1) if row['vote_number'] else -1
-    connection.write_votes(existing_votes, 'question', data_header)
+    connection.write_votes(existing_votes, file_name, data_header)
+

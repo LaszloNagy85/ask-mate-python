@@ -1,3 +1,5 @@
 id,submission_time,vote_number,question_id,message,image
-0,1493398154,4,0,"You need to use brackets: my_list = []",
-1,1493088154,35,0,"Look it up in the Python docs",
+0,1493398154,4,0,You need to use brackets: my_list = [],
+1,1493088154,35,0,Look it up in the Python docs,
+2,1563990885,0,1,maybe this time,q_and_a.jpg
+3,1563991313,0,1,s-jdgn.kjsmdv,
