@@ -14,9 +14,9 @@ SORT_OPTIONS = ['submission_time', 'view_number', 'vote_number', 'title']
 SORT_TITLES = ['Submission time', 'View number', 'Vote number', 'Title']
 
 
-@app.route('/question/<question_id>')
+@app.route('/question/<question_id>/')
 def route_question(question_id):
-    question = data_manager.get_selected_data('question', question_id, 'id')  # note to self: reconsider this!
+    question = data_manager.get_selected_data('question', question_id, 'id')
     answers = data_manager.get_selected_data('answer', question_id, 'question_id')
 
     data_manager.convert_readable_dates(question)
@@ -29,6 +29,18 @@ def route_question(question_id):
                            page_title='Display a question',
                            button_title='Save new answer',
                            )
+
+@app.route('/question/counted/<question_id>/')
+def route_question_counted(question_id):
+    question = data_manager.get_selected_data('question', question_id, 'id')
+    if str(request.referrer) == 'http://127.0.0.1:8000/':
+        view_number = int(question[0]['view_number'])
+        view_number += 1
+        question[0]['view_number'] = view_number
+        data_manager.update_data(question[0], 'question', DATA_HEADER_QUESTION)
+
+    return redirect(f'/question/{question_id}')
+
 
 
 @app.route('/question/<question_id>/new-answer', methods=['POST'])
