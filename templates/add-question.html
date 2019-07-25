@@ -22,7 +22,7 @@
             <input id="image" name="image" type="file" accept="image/png, image/jpeg">
             {%  if question[0]['image'] == '' %}
                 No file uploaded
-            {% else %}
+            {% elif question[0]['image'] %}
                 Uploaded file: {{ question[0]['image'] }}
             {%  endif %}
         </p>
