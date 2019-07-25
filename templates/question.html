@@ -5,7 +5,11 @@
 {% block content %}
 
     <div>
-        <h1>{{ question.title }}</h1>
+        <h1 style="display: inline-flex">{{ question.title }}
+            <form action="/question/{{question.id}}/delete" method="post">
+                <button type="submit" name="delete">Delete Question</button>
+            </form>
+        </h1>
         <p>Submission time: {{ question.submission_time }} Views: {{ question.view_number }} Votes: {{ question.vote_number }}</p>
         <p style="white-space: pre-line">{{ question.message.replace('<br>', '\n') }}</p>
         {% if question.image %}
@@ -16,7 +20,11 @@
 
     <div>
         {% for answer in answers %}
-        <p>Submission time: {{ answer.submission_time }} Votes: {{ answer.vote_number }}</p>
+        <div>Submission time: {{ answer.submission_time }} Votes: {{ answer.vote_number }}
+            <form style="display: inline-block" action="answer/{{answeriid}}/delete" method="post">
+                <button type="submit" name="delete_answer">Delete Answer</button>
+            </form>
+        </div>
         <p style="white-space: pre-line">{{ answer.message.replace('<br>', '\n') }}</p>
         {% if answer.image %}
             <p><img src="/static/images/{{ answer.image }}"></p>
