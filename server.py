@@ -136,6 +136,12 @@ def route_question_update(question_id):
                            )
 
 
+@app.route('/vote_question/<question_id>/<type>')
+def vote_question(question_id, type):
+    data_manager.save_vote(question_id, type, DATA_HEADER_QUESTION)
+    return redirect(f"/question/{question_id}")
+
+
 if __name__ == '__main__':
     app.run(
         port=8000,
