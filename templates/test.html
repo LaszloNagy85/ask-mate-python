@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+
+{% block title %}Welcome{% endblock %}
+
+{% block content %}
+    <h1>AskMate - Questions</h1>
+    {% for question in questions %}
+        <p>
+        <a href="question/{{question.id}}">{{question.title}}<br></a>
+        </p>
+            <details>
+
+                <summary>Show Answers</summary>
+
+                    {% for answer in answers %}
+                        {% if question.id == answer.question_id %}
+                            <p>
+                                <span style="padding-left: 2em">{{answer.message}}</span>
+                            </p>
+                        {% endif %}
+
+                    {% endfor %}
+
+            </details>
+
+    {% endfor %}
+{% endblock %}

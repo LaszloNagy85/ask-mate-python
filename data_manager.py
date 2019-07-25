@@ -31,7 +31,7 @@ def convert_readable_dates(data):
 
 def delete_answer(id_, id_key):
     remaining_answers = []
-    all_answers = get_all_data('test_answers')
+    all_answers = get_all_data('answer')
     for answer in all_answers:
         if id_ != answer[id_key]:
             remaining_answers.append(answer)
@@ -41,7 +41,7 @@ def delete_answer(id_, id_key):
 
 def delete_question(id_):
     remaining_questions = []
-    all_questions = get_all_data('test')
+    all_questions = get_all_data('question')
     for question in all_questions:
         if id_ != question['id']:
             remaining_questions.append(question)
