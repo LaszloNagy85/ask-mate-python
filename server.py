@@ -58,11 +58,12 @@ def route_new_answer(question_id):
 
 @app.route('/', methods=['GET', 'POST'])
 def route_list_of_questions():
-    sort_by = 'title'
-    direction = ''
-    if request.method == 'POST':
-        sort_by = request.form.get('sort_by')
-        direction = request.form.get('direction')
+    sort_by = 'submission_time'
+    direction = 'True'
+    if 'sort_by' in request.args:
+        sort_by = request.args.get('sort_by')
+    if 'direction' in request.args:
+        direction = request.args.get('direction')
     data = data_manager.get_sorted_data('question', sort_by, direction)
     data = data_manager.get_dict_of_specific_types(['id', 'title'], data)
     return render_template('list.html',
@@ -72,7 +73,7 @@ def route_list_of_questions():
                            sort_options=SORT_OPTIONS,
                            sort_titles=SORT_TITLES,
                            directions=['Ascending', 'Descending'],
-                           reverse_options=['', 'True'])
+                           reverse_options=['asc', 'desc'])
 
 
 @app.route('/add-question', methods=['GET', 'POST'])
@@ -112,6 +113,14 @@ def route_question_update(question_id):
     FIRST = 0
     if request.method == 'POST':
         stored_data = data_manager.get_selected_data('question', question_id, 'id')
+        if request.method == 'POST':
+            if 'image' in request.files:
+                image = request.files['image']
+                if image.filename != "":
+                    image.save(os.path.join(app.config['UPLOAD_FOLDER'], image.filename))
+            else:
+                image = ''
+
         question = {
             'id': question_id,
             'submission_time': util.get_epoch(),
@@ -119,7 +128,7 @@ def route_question_update(question_id):
             'vote_number': stored_data[FIRST]['vote_number'],
             'title': request.form.get('title'),
             'message': request.form.get('message'),
-            'image': request.form.get('image')
+            'image': image.filename if image else stored_data[FIRST]['image']
         }
 
         data_manager.update_data(question, 'question', DATA_HEADER_QUESTION)

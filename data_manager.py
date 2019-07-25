@@ -71,6 +71,9 @@ def get_sorted_data(file_name, sort_by, direction):
         is_int = str
     else:
         is_int = int
-    direction = bool(direction)
-    sorted_data = sorted(data_to_sort, key=lambda x: is_int(x[sort_by]), reverse=direction)
+    if direction == 'asc':
+        is_reverse = False
+    else:
+        is_reverse = True
+    sorted_data = sorted(data_to_sort, key=lambda x: is_int(x[sort_by]), reverse=is_reverse)
     return sorted_data
