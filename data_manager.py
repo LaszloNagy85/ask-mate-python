@@ -77,3 +77,14 @@ def get_sorted_data(file_name, sort_by, direction):
         is_reverse = True
     sorted_data = sorted(data_to_sort, key=lambda x: is_int(x[sort_by]), reverse=is_reverse)
     return sorted_data
+
+
+def save_vote(question_id, type, data_header):
+    existing_votes = connection.get_all_data_from_file('question')
+    for row in existing_votes:
+        if row['id'] == question_id:
+            if type == 'up':
+                row['vote_number'] = str(int(row['vote_number']) + 1) if row['vote_number'] else 1
+            else:
+                row['vote_number'] = str(int(row['vote_number']) - 1) if row['vote_number'] else -1
+    connection.write_votes(existing_votes, 'question', data_header)

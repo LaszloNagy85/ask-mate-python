@@ -36,3 +36,11 @@ def write_remaining_data_to_file(data, file_name, data_header):
         writer.writeheader()
         for row in data:
             writer.writerow(row)
+
+
+def write_votes(data, file_name, header):
+    with open(f"sample_data/{file_name}.csv", 'w', newline='', encoding='utf-8') as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=header)
+        writer.writeheader()
+        writer.writerows(data)
+
