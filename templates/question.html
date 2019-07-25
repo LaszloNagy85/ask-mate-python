@@ -14,16 +14,18 @@
             </form>
 
         </h1>
-        <p>Submission time: {{ question.submission_time }} Views: {{ question.view_number }} Votes: {{ question.vote_number }}</p>
+    </div>
+    <div style="display: inline-flex">
+        <p>Submission time: {{ question.submission_time }} Views: {{ question.view_number }} Votes: {{ question.vote_number }}&ensp;</p>
         <p>
             <a href="/vote_question/{{ question.id }}/up"><img src="/static/icons/arrow_up.png" width="20" height="20" alt=""></a>
             <a href="/vote_question/{{ question.id }}/down"><img src="/static/icons/arrow_down.png" width="20" height="20" alt=""></a>
         </p>
-        <p style="white-space: pre-line">{{ question.message.replace('<br>', '\n') }}</p>
-        {% if question.image %}
-            <p><img src="/static/images/{{ question.image }}"></p>
-        {% endif %}
     </div>
+    <p style="white-space: pre-line">{{ question.message.replace('<br>', '\n') }}</p>
+    {% if question.image %}
+        <p><img src="/static/images/{{ question.image }}"></p>
+    {% endif %}
 
     <div>
         {% for answer in answers %}

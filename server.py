@@ -79,8 +79,12 @@ def route_list_of_questions():
         direction = request.args.get('direction')
     data = data_manager.get_sorted_data('question', sort_by, direction)
     data = data_manager.get_dict_of_specific_types(['id', 'title'], data)
+    answers = data_manager.get_all_data('answer')
+    questions = data_manager.get_all_data('question')
     return render_template('list.html',
                            data=data,
+                           answers=answers,
+                           questions=questions,
                            sort_by=sort_by,
                            direction=direction,
                            sort_options=SORT_OPTIONS,
