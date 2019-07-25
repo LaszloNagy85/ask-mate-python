@@ -6,14 +6,13 @@
 
 {% block content %}
     <h2>Questions</h2>
-
     <br>
-    <a href="/add-question">Ask a question</a>
-    <br>
+    <a id="ask" href="/add-question">Ask a question</a>
+    <br><br>
     <hr>
         {% for question in questions %}
             <p>
-                <a href="/question/counted/{{ question['id'] }}">{{ question['title'] }}</a>
+                <a class="question" href="/question/counted/{{ question['id'] }}">{{ question['title'] }}</a>
             </p>
                 <details>
 
@@ -21,7 +20,7 @@
 
                     {% for answer in answers %}
                         {% if question.id == answer.question_id %}
-                            <p>
+                            <p class="answer">
                                 <span style="padding-left: 2em">{{answer.message}}</span>
                             </p>
                         {% endif %}
