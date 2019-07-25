@@ -3,7 +3,6 @@ from flask import Flask, render_template, request, redirect, url_for
 import data_manager
 import util
 import os
-import connection
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = "static/images"
@@ -31,6 +30,7 @@ def route_question(question_id):
                            button_title='Save new answer',
                            )
 
+
 @app.route('/question/counted/<question_id>/')
 def route_question_counted(question_id):
     question = data_manager.get_selected_data('question', question_id, 'id')
@@ -41,7 +41,6 @@ def route_question_counted(question_id):
         data_manager.update_data(question[0], 'question', DATA_HEADER_QUESTION)
 
     return redirect(f'/question/{question_id}')
-
 
 
 @app.route('/question/<question_id>/new-answer', methods=['POST'])
