@@ -29,11 +29,11 @@ def convert_readable_dates(data):
         row['submission_time'] = util.convert_epoch_to_readable(row['submission_time'])
 
 
-def delete_answer(id_):
+def delete_answer(id_, id_key):
     remaining_answers = []
-    all_answers = get_all_data('answer')
+    all_answers = get_all_data('test_answers')
     for answer in all_answers:
-        if id_ != answer['question_id']:
+        if id_ != answer[id_key]:
             remaining_answers.append(answer)
 
     return remaining_answers
@@ -41,12 +41,12 @@ def delete_answer(id_):
 
 def delete_question(id_):
     remaining_questions = []
-    all_questions = get_all_data('question')
+    all_questions = get_all_data('test')
     for question in all_questions:
         if id_ != question['id']:
             remaining_questions.append(question)
         else:
-            remaining_answers = delete_answer(question['id'])
+            remaining_answers = delete_answer(id_, 'question_id')
     return remaining_questions, remaining_answers
 
 
