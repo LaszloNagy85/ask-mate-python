@@ -170,6 +170,14 @@ def vote(file_name, question_id, vote_type, answer_id):
 @app.route('/question/<question_id>/delete/', methods=['POST'])
 def route_delete_question(question_id):
     if request.method == 'POST':
+
+        question = data_manager.get_selected_data('question', question_id, 'id')[0]
+        answers = data_manager.get_selected_data('answer', question_id, 'question_id')
+        image_filenames = [question['image']] + [answer['image'] for answer in answers]
+        for filename in image_filenames:
+            if filename:
+                os.remove(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
         data_manager.delete_question(question_id)
 
         return redirect('/')
@@ -178,7 +186,12 @@ def route_delete_question(question_id):
 @app.route('/answer/<answer_id>/delete/', methods=['POST'])
 def route_delete_answer(answer_id):
     if request.method == 'POST':
-        question_id = data_manager.get_selected_data('answer', answer_id, 'id')[0]['question_id']
+        data_of_answer = data_manager.get_selected_data('answer', answer_id, 'id')[0]
+        question_id = data_of_answer['question_id']
+
+        if data_of_answer['image']:
+            os.remove(os.path.join(app.config['UPLOAD_FOLDER'], data_of_answer['image']))
+
         data_manager.delete_answer(answer_id, 'id')
 
     return redirect(f'/question/{question_id}')

@@ -31,8 +31,8 @@ $Arr_AllQueries = @('Exec [mystoredproc] @param1=1, @param2=2',
 
 #Creating the batches
 $counter = [pscustomobject] @{ Value = 0 };
-$Batches_AllQueries = $Arr_AllQueries | Group-Object -Property {
-    [math]::Floor($counter.Value++ / $NumberOfParallerThreads)
+$Batches_AllQueries = $Arr_AllQueries | Group-Object -Property { 
+    [math]::Floor($counter.Value++ / $NumberOfParallerThreads) 
 };
 
 forEach ($item in $Batches_AllQueries) {
@@ -42,10 +42,10 @@ forEach ($item in $Batches_AllQueries) {
 
         $ScriptBlock = {
             # accept the loop variable across the job-context barrier
-            param($query)
+            param($query) 
             # Execute a command
 
-            Try
+            Try 
             {
                 Write-Host ""[processing '$query']""
                 $objConnection = New-Object System.Data.SqlClient.SqlConnection;
@@ -63,13 +63,13 @@ forEach ($item in $Batches_AllQueries) {
 
                 $objConnection.Close();
                 $objConnection = $null;
-            }
-            Catch
-            {
+            } 
+            Catch 
+            { 
                 $ErrorMessage = $_.Exception.Message
                 $FailedItem = $_.Exception.ItemName
                 Write-Host ""[Error processing: $($query)]"" -BackgroundColor Red;
-                Write-Host $ErrorMessage
+                Write-Host $ErrorMessage 
             }
 
         }
