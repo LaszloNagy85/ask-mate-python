@@ -1,6 +1,6 @@
 id,submission_time,view_number,vote_number,title,message,image
-0,1493368154,29,7,How to make lists in Python?,"I am totally new to this, any hints?",
-1,1564044635,15,9,Wordpress loading multiple jQuery Versions,"I developed a plugin that uses the jquery booklet plugin (http://builtbywill.com/booklet/#/) this plugin binds a function to $ so I cann call $('.myBook').booklet();
+0,1493368154,39,7,How to make lists in Python?,"I am totally new to this, any hints?",
+1,1564044635,18,9,Wordpress loading multiple jQuery Versions,"I developed a plugin that uses the jquery booklet plugin (http://builtbywill.com/booklet/#/) this plugin binds a function to $ so I cann call $('.myBook').booklet();
 
 I could easy managing the loading order with wp_enqueue_script so first I load jquery then I load booklet so everything is fine.
 
@@ -12,3 +12,159 @@ app.js (bundled file with webpack, including jquery)",image1.png
 2,1493015432,1364,57,Drawing canvas with an image picked with Cordova Camera Plugin,"I'm getting an image from device and drawing a canvas with filters using Pixi JS. It works all well using computer to get an image. But when I'm on IOS, it throws errors such as cross origin issue, or that I'm trying to use an unknown format.
 
 This is the code I'm using to draw the image (that works on web/desktop but not cordova built ios app)",
+3,1564077006,0,0,How to execute large amount of sql queries asynchronous and in threads,"Problem: I have huge amount of sql queries (around 10k-20k) and I want to run them asynchronous in 50 (or more) threads.
+
+I wrote a powershell script for this job, but it is very slow (It took about 20 hours to execute all). Desired result is 3-4 hours max.
+
+Question: How can I optimize this powershell script? Should I reconsider and use another technology like python or c#?
+
+I think it's powershell issue, because when I check with whoisactive the queries are executing fast. Creating, exiting and unloading jobs takes a lot of time, because for each thread is created separate PS instances.
+
+My code:
+
+$NumberOfParallerThreads = 50;
+
+
+$Arr_AllQueries = @('Exec [mystoredproc] @param1=1, @param2=2',
+                    'Exec [mystoredproc] @param1=11, @param2=22',
+                    'Exec [mystoredproc] @param1=111, @param2=222')
+
+#Creating the batches
+$counter = [pscustomobject] @{ Value = 0 };
+$Batches_AllQueries = $Arr_AllQueries | Group-Object -Property {
+    [math]::Floor($counter.Value++ / $NumberOfParallerThreads)
+};
+
+forEach ($item in $Batches_AllQueries) {
+    $tmpBatch = $item.Group;
+
+    $tmpBatch | % {
+
+        $ScriptBlock = {
+            # accept the loop variable across the job-context barrier
+            param($query)
+            # Execute a command
+
+            Try
+            {
+                Write-Host ""[processing '$query']""
+                $objConnection = New-Object System.Data.SqlClient.SqlConnection;
+                $objConnection.ConnectionString = 'Data Source=...';
+
+                $ObjCmd = New-Object System.Data.SqlClient.SqlCommand;
+                $ObjCmd.CommandText = $query;
+                $ObjCmd.Connection = $objConnection;
+                $ObjCmd.CommandTimeout = 0;
+
+                $objAdapter = New-Object System.Data.SqlClient.SqlDataAdapter;
+                $objAdapter.SelectCommand = $ObjCmd;
+                $objDataTable = New-Object System.Data.DataTable;
+                $objAdapter.Fill($objDataTable)  | Out-Null;
+
+                $objConnection.Close();
+                $objConnection = $null;
+            }
+            Catch
+            {
+                $ErrorMessage = $_.Exception.Message
+                $FailedItem = $_.Exception.ItemName
+                Write-Host ""[Error processing: $($query)]"" -BackgroundColor Red;
+                Write-Host $ErrorMessage
+            }
+
+        }
+
+        # pass the loop variable across the job-context barrier
+        Start-Job $ScriptBlock -ArgumentList $_ | Out-Null
+    }
+
+    # Wait for all to complete
+    While (Get-Job -State ""Running"") { Start-Sleep 2 }
+
+    # Display output from all jobs
+    Get-Job | Receive-Job | Out-Null
+
+    # Cleanup
+    Remove-Job *
+
+}
+UPDATE:
+
+Resources: The DB server is on a remote machine with:
+
+24GB RAM,
+8 cores,
+500GB Storage,
+SQL Server Management Studio (SSMS) 18.0
+We want to use the maximum cpu power.
+
+Framework limitation: The only limitation is not to use SSMS to execute the queries. The requests should come from outside source like: Powershell, C#, Python, etc.",
+4,1564078386,2,0,Hide Location toolbar from IONIC Native InAppBrowser,"Reading the cordova documentation inappbrowser I can not find a way to hide the Location Toolbar (ALWAYS AND WHEN it has ""location = yes"") and just for Android, becouse we can use ""toolbar=no"" on IOs.
+
+Why the need to have active ""location = yes""? You can put ""no"" and it does not appear anymore.
+
+As I comment in this thread, I need the activated option to be able to make use of the functions of ionic native IAB
+
+Options i use:
+
+location=yes,
+EnableViewPortScale=yes,
+hidenavigationbuttons=yes,
+enableViewportScale=yes,
+hideurlbar=yes,
+zoom=no,
+mediaPlaybackRequiresUserAction=yes,
+enter image description here
+
+As we can see in the image, the toolbar still appears at the top.
+
+Any option that has been overlooked? Is it possible to remove it with CSS, if so, does it have any Class or ID to call, or should I touch it with pure code?",KDkQ3.jpg
+5,1564078665,2,0,WireMock error while trying to mock an HttpClient with Proxy,"I have an Http Client which uses a proxy in real life to send a request to an API. I am trying to use WireMock to run my http client tests and mock the responses for the API. However, I could not manage to make Wiremock work with a proxy setup. I have tried all the relevant combinations and still couldn't manage to get a successful test.
+
+I have tried viaProxy configuration and also proxiedWith but not sure if I am using them correctly. The documentation is not helping much either.
+
+The client code has the following config:
+
+private val httpsProxySettings: ConnectionPoolSettings =
+    ConnectionPoolSettings(actorSystem)
+      .withConnectionSettings(ClientConnectionSettings(actorSystem))
+      .withTransport(
+        ClientTransport.httpsProxy(
+          InetSocketAddress.createUnresolved(PROXY_HOST, PROXY_PORT)
+        )
+      )
+And the test configuration is along the lines of:
+
+      val wireMockServer = new WireMockServer(
+        wireMockConfig().port(API_PORT).proxyVia(PROXY_HOST, PROXY_PORT)
+      )
+      wireMockServer.start()
+      WireMock.configureFor(""localhost"", API_PORT)
+
+      wireMockServer.stubFor(
+        put(anyUrl())
+          .willReturn(
+            aResponse()
+              .withStatus(201)
+//            .proxiedFrom(API_HOST)
+          )
+      )",
+6,1564079180,1,0,Set global declaration in vscode JavaScript,"I'm working on a JavaScript transpiler that apart from other things will also replace certain functions and variables upon build.
+
+For example the following file (./src/my-module.js):
+
+defineModule(""MyModule"", function(exports) {
+  return exports;
+});
+Will be copied and converted to (./build/my-module.js):
+
+(function(global, factory) {
+  ""use strict"";
+  if (typeof exports !== ""undefined"" && typeof module !== ""undefined"") module.exports.MyModule = factory(exports.MyModule || {});
+  else factory(global.MyModule = {});
+})(this, function(exports) {
+  return exports;
+});
+Some of these functions could also return a result. In that case I would like to be able to declare the types of the parameters and the result of the function without using require. Is it possible to have a global .d.ts definition in VSCode?
+
+So far, all I've done is add the functions to the global variable of eslint so as to not have errors.",
