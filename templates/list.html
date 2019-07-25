@@ -21,7 +21,7 @@
                     {% for answer in answers %}
                         {% if question.id == answer.question_id %}
                             <p class="answer">
-                                <span style="padding-left: 2em">{{answer.message}}</span>
+                                <span style="padding-left: 2em white-space: pre-wrap">{{answer.message}}</span>
                             </p>
                         {% endif %}
                     {% endfor %}
