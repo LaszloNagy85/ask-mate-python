@@ -174,7 +174,7 @@ def route_delete_question(question_id):
 @app.route('/answer/<answer_id>/delete/', methods=['POST'])
 def route_delete_answer(answer_id):
     if request.method == 'POST':
-        question_id = data_manager.get_selected_data('test_answers', answer_id, 'id')[0]['question_id']
+        question_id = data_manager.get_selected_data('answer', answer_id, 'id')[0]['question_id']
         data_manager.delete_answer(answer_id, 'id')
 
     return redirect(f'/question/{question_id}')
