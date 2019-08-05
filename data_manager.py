@@ -101,3 +101,9 @@ def save_image(upload_path, request_files):
     return image
 
 
+def delete_image(image_filenames, image_path):
+    for filename in image_filenames:
+        if filename:
+            connection.remove_image(filename, image_path)
+
+

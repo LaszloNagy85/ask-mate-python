@@ -158,10 +158,9 @@ def route_delete_question(question_id):
 
         question = data_manager.get_selected_data('question', question_id, 'id')[0]
         answers = data_manager.get_selected_data('answer', question_id, 'question_id')
+
         image_filenames = [question['image']] + [answer['image'] for answer in answers]
-        for filename in image_filenames:
-            if filename:
-                os.remove(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        data_manager.delete_image(image_filenames, app.config['UPLOAD_FOLDER'])
 
         data_manager.delete_question(question_id)
 

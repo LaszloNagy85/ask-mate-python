@@ -48,3 +48,8 @@ def write_votes(data, file_name, header):
 
 def upload_image(upload_path, image):
     image.save(os.path.join(upload_path, image.filename))
+
+
+def remove_image(filename, image_path):
+    os.remove(os.path.join(image_path, filename))
+
