@@ -1,4 +1,5 @@
 import connection
+import database_connection
 import util
 
 
@@ -95,7 +96,7 @@ def save_image(upload_path, request_files):
     if 'image' in request_files:
         image = request_files['image']
         if image.filename != "":
-            connection.upload_image(upload_path, image)
+            database_connection.upload_image(upload_path, image)
     else:
         image = ''
     return image
@@ -104,6 +105,6 @@ def save_image(upload_path, request_files):
 def delete_image(image_filenames, image_path):
     for filename in image_filenames:
         if filename:
-            connection.remove_image(filename, image_path)
+            database_connection.remove_image(filename, image_path)
 
 

@@ -49,3 +49,12 @@ def connection_handler(function):
         return ret_value
 
     return wrapper
+
+
+def upload_image(upload_path, image):
+    image.save(os.path.join(upload_path, image.filename))
+
+
+def remove_image(filename, image_path):
+    os.remove(os.path.join(image_path, filename))
+
