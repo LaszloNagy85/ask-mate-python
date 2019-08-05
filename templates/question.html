@@ -5,43 +5,46 @@
 {% block content %}
 
     <div>
-        <h2 style="display: inline-flex">{{ question.title }}
+        <div class="inline">
             <form action="/question/{{question.id}}/delete" method="post">
                 <button type="submit" name="delete">Delete Question</button>
             </form>
             <form>
                 <input type="button" value="Edit question" onclick="window.location.href='/question/{{ question.id }}/edit'"/>
             </form>
-
-        </h2>
+        </div>
+        <h2>{{ question.title }}</h2>
+        <hr>
     </div>
-    <hr>
-    <div style="display: inline-flex">
-        <p>Submission time: {{ question.submission_time }} Views: {{ question.view_number }} Votes: {{ question.vote_number }}&ensp;</p>
-        <p>
+    <div>
+        <div class="inline">
             <a href="/vote/question/{{ question.id }}/up/None"><img src="/static/icons/arrow_up.png" width="20" height="20" alt=""></a>
             <a href="/vote/question/{{ question.id }}/down/None"><img src="/static/icons/arrow_down.png" width="20" height="20" alt=""></a>
-        </p>
+        </div>
+        <p>Submission time: {{ question.submission_time }} Views: {{ question.view_number }} Votes: {{ question.vote_number }}</p>
+        <hr>
     </div>
-    <hr>
-    <p style="white-space: pre-wrap">{{ question.message.replace('<br>', '\n') }}</p>
-    {% if question.image %}
-        <p><img class="uploaded" src="/static/images/{{ question.image }}"></p>
-    {% endif %}
-
+    <div>
+        <p class="message">{{ question.message.replace('<br>', '\n') }}</p>
+        {% if question.image %}
+            <p><img class="uploaded" src="/static/images/{{ question.image }}"></p>
+        {% endif %}
+    </div>
     <div>
         {% for answer in answers %}
-         <br><hr>
-        <div>Submission time: {{ answer.submission_time }} Votes: {{ answer.vote_number }}
-            <a href="/vote/answer/{{ question.id }}/up/{{ answer.id }}"><img src="/static/icons/arrow_up.png" width="20" height="20" alt=""></a>
-            <a href="/vote/answer/{{ question.id }}/down/{{ answer.id }}"><img src="/static/icons/arrow_down.png" width="20" height="20" alt=""></a>
-
-            <form style="display: inline-block" action="/answer/{{answer.id}}/delete" method="post">
-                <button type="submit" name="delete_answer">Delete Answer</button>
-            </form>
+            <br><hr>
+            <div class="inline">
+                <a href="/vote/answer/{{ question.id }}/up/{{ answer.id }}"><img src="/static/icons/arrow_up.png" width="20" height="20" alt=""></a>
+                <a href="/vote/answer/{{ question.id }}/down/{{ answer.id }}"><img src="/static/icons/arrow_down.png" width="20" height="20" alt=""></a>
+                <div class="delete-button">
+                    <form action="/answer/{{answer.id}}/delete" method="post">
+                        <button type="submit" name="delete_answer">Delete Answer</button>
+                    </form>
+                </div>
+            </div>
+            <p>Submission time: {{ answer.submission_time }} Votes: {{ answer.vote_number }}</p>
             <hr>
-        </div>
-        <p style="white-space: pre-wrap">{{ answer.message.replace('<br>', '\n') }}</p>
+            <p class="message">{{ answer.message.replace('<br>', '\n') }}</p>
         {% if answer.image %}
             <p><img class="uploaded" src="/static/images/{{ answer.image }}"></p>
         {% endif %}
@@ -63,7 +66,5 @@
 
         </form>
     </div>
-
-    <p><a id="home" href="/">Back to Questions</a></p>
 
 {% endblock %}
