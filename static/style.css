@@ -2,40 +2,42 @@ body {
     max-width: 960px;
     margin: auto;
     font-family: Arial, Helvetica, sans-serif;
-    }
+}
 h1 {
     color: darkslategray;
-    }
+}
 h2 {
     color: #276965;
-    }
+}
 a#ask {
     color: #176942;
     text-decoration: none;
-    }
+}
 a#ask:hover {
     text-decoration: underline;
-    }
+}
 a#home {
     color: darkslategray;
     text-decoration: none;
-    }
+}
 a#home:hover {
     text-decoration: underline;
-    }
+}
 
 a.question:hover {
 	text-decoration: none;
 	color: #38a09c;
-    }
+}
 a.question {
     font-weight: bold;
     text-decoration: none;
     color: #276965;
-    }
+}
 .answer {
     color: #7a7a7a;
-    }
+    padding-left: 2em;
+    white-space: pre-wrap;
+}
 img.uploaded {
     display: block;
     horiz-align: center;
@@ -45,4 +47,17 @@ img.uploaded {
     }
 textarea {
     width: auto;
-    }
+}
+
+.inline {
+    float: right;
+    display: inline-flex;
+}
+
+.message, .answer{
+    white-space: pre-wrap;
+}
+
+.delete-button {
+    padding-left: 30px;
+}
