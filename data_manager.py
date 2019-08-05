@@ -1,4 +1,5 @@
 import connection
+import database_connection
 import util
 
 
@@ -89,4 +90,21 @@ def save_vote(file_name, question_id, vote_type, data_header, answer_id):
             else:
                 row['vote_number'] = str(int(row['vote_number']) - 1) if row['vote_number'] else -1
     connection.write_votes(existing_votes, file_name, data_header)
+
+
+def save_image(upload_path, request_files):
+    if 'image' in request_files:
+        image = request_files['image']
+        if image.filename != "":
+            database_connection.upload_image(upload_path, image)
+    else:
+        image = ''
+    return image
+
+
+def delete_image(image_filenames, image_path):
+    for filename in image_filenames:
+        if filename:
+            database_connection.remove_image(filename, image_path)
+
 

@@ -1,4 +1,5 @@
 import csv
+import os
 
 
 DATA_HEADER_QUESTION = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
@@ -43,4 +44,3 @@ def write_votes(data, file_name, header):
         writer = csv.DictWriter(csvfile, fieldnames=header)
         writer.writeheader()
         writer.writerows(data)
-

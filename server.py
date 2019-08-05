@@ -48,12 +48,7 @@ def route_question_counted(question_id):
 def route_new_answer(question_id):
     new_answer_id = data_manager.generate_id('answer')
     submission_time = util.get_epoch()
-    if 'image' in request.files:
-        image = request.files['image']
-        if image.filename != "":
-            image.save(os.path.join(app.config['UPLOAD_FOLDER'], image.filename))
-    else:
-        image = ''
+    image = data_manager.save_image(app.config['UPLOAD_FOLDER'], request.files)
 
     new_answer = {
         'id': new_answer_id,
@@ -96,12 +91,7 @@ def route_list_of_questions():
 def route_question_add():
     generated_id = data_manager.generate_id('question')
     if request.method == 'POST':
-        if 'image' in request.files:
-            image = request.files['image']
-            if image.filename != "":
-                image.save(os.path.join(app.config['UPLOAD_FOLDER'], image.filename))
-        else:
-            image = ''
+        image = data_manager.save_image(app.config['UPLOAD_FOLDER'], request.files)
 
         question = {
             'id': generated_id,
@@ -129,13 +119,8 @@ def route_question_update(question_id):
     FIRST = 0
     if request.method == 'POST':
         stored_data = data_manager.get_selected_data('question', question_id, 'id')
-        if request.method == 'POST':
-            if 'image' in request.files:
-                image = request.files['image']
-                if image.filename != "":
-                    image.save(os.path.join(app.config['UPLOAD_FOLDER'], image.filename))
-            else:
-                image = ''
+
+        image = data_manager.save_image(app.config['UPLOAD_FOLDER'], request.files)
 
         question = {
             'id': question_id,
@@ -173,10 +158,9 @@ def route_delete_question(question_id):
 
         question = data_manager.get_selected_data('question', question_id, 'id')[0]
         answers = data_manager.get_selected_data('answer', question_id, 'question_id')
+
         image_filenames = [question['image']] + [answer['image'] for answer in answers]
-        for filename in image_filenames:
-            if filename:
-                os.remove(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        data_manager.delete_image(image_filenames, app.config['UPLOAD_FOLDER'])
 
         data_manager.delete_question(question_id)
 
