@@ -90,3 +90,14 @@ def save_vote(file_name, question_id, vote_type, data_header, answer_id):
                 row['vote_number'] = str(int(row['vote_number']) - 1) if row['vote_number'] else -1
     connection.write_votes(existing_votes, file_name, data_header)
 
+
+def save_image(upload_path, request_files):
+    if 'image' in request_files:
+        image = request_files['image']
+        if image.filename != "":
+            connection.upload_image(upload_path, image)
+    else:
+        image = ''
+    return image
+
+
