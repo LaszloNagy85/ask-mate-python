@@ -126,7 +126,3 @@ def delete_image(image_filenames, image_path):
     for filename in image_filenames:
         if filename:
             database_connection.remove_image(filename, image_path)
-
-
-# print(get_data_by_attributes(['title'], 'question'))
-print(get_all_data('question'))
