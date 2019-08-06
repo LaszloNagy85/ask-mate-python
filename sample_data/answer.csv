@@ -14,7 +14,7 @@ function getFileExtension(filename) {
            {
                viewLinkpdf(filename)
            }
-           else 
+           else
            {
                viewLink(filename)
            }
@@ -40,7 +40,7 @@ function viewLinkpdf(filepath) {
         {
             viewLinkpdf(filename)
         }
-        else 
+        else
         {
             viewLink(filename)
         }
@@ -71,7 +71,7 @@ set toolbar=no
 
 var dataref = cordova.InAppBrowser.open(url, target, options)<--------pass to this place
 toolbar: set to yes or no to turn the toolbar on or off for the InAppBrowser (defaults to yes)",
-9,1564078686,0,5,"You may try to changing to 
+9,1564078686,0,5,"You may try to changing to
 val wireMockServer = new WireMockServer(options().proxyVia(PROXY_HOST,PROXY_PORT))
 as stated here http://wiremock.org/docs/proxying/.
 
