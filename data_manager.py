@@ -3,16 +3,16 @@ import database_connection
 import util
 
 
-def get_all_data(file_name):  # Z
+def get_all_data(file_name):
     return connection.get_all_data_from_file(file_name)
 
 
-def get_selected_data(file_name, data_id, data_key):  # N (2 kell: fetchone, fetchall)
+def get_selected_data(file_name, data_id, data_key):
     existing_data = connection.get_all_data_from_file(file_name)
     return [row for row in existing_data if row[data_key] == data_id]
 
 
-def get_all_data_of_one_type(type_, file_name):  # do we need this?
+def get_all_data_of_one_type(type_, file_name):
     existing_data = connection.get_all_data_from_file(file_name)
     selected_data = []
     for row in existing_data:
@@ -85,10 +85,8 @@ def save_vote(file_name, question_id, vote_type, data_header, answer_id):  # Z
     voted_id = question_id if answer_id == 'None' else answer_id
     for row in existing_votes:
         if row['id'] == voted_id:
-            if vote_type == 'up':
-                row['vote_number'] = str(int(row['vote_number']) + 1) if row['vote_number'] else 1
-            else:
-                row['vote_number'] = str(int(row['vote_number']) - 1) if row['vote_number'] else -1
+            modifier = 1 if vote_type == 'up' else -1
+            row['vote_number'] = str(int(row['vote_number']) + modifier) if row['vote_number'] else modifier
     connection.write_votes(existing_votes, file_name, data_header)
 
 
