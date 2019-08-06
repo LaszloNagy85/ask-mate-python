@@ -80,8 +80,17 @@ def get_data_by_attributes(cursor, list_of_types, table):
     return data_by_attributes
 
 
-def add_data(data, file_name, data_header):  # Z
-    return connection.write_data_to_file(data, file_name, data_header)
+# def add_data(data, file_name, data_header):  # Z
+#     return connection.write_data_to_file(data, file_name, data_header)
+
+
+@database_connection.connection_handler
+def add_data(cursor, col_list, value_list, table):
+    query_for_func = sql.SQL('INSERT INTO {} ({}) VALUES ({})').format(
+                     sql.Identifier(table),
+                     sql.SQL(', ').join(map(sql.Identifier, col_list)),
+                     sql.SQL(', ').join(sql.Placeholder() * len(value_list)))
+    cursor.execute(query_for_func, value_list)
 
 
 def update_data(data, file_name, data_header):  # Z
@@ -126,3 +135,6 @@ def delete_image(image_filenames, image_path):
     for filename in image_filenames:
         if filename:
             database_connection.remove_image(filename, image_path)
+
+
+add_data(['title', 'message'], ['valami', 'semmi'], 'question')
