@@ -40,6 +40,15 @@ def delete_answer(id_, id_key):  # E
     connection.write_remaining_data_to_file(remaining_answers, 'answer', connection.DATA_HEADER_ANSWER)
 
 
+@database_connection.connection_handler
+def delete_answer_db(cursor, answer_id):
+    cursor.execute("""
+                    DELETE FROM answer
+                    WHERE id = %(answer)s;
+                    """,
+                   {'answer': answer_id})
+
+
 def delete_question(id_):  # E
     remaining_questions = []
     all_questions = get_all_data('question')
@@ -104,5 +113,3 @@ def delete_image(image_filenames, image_path):
     for filename in image_filenames:
         if filename:
             database_connection.remove_image(filename, image_path)
-
-
