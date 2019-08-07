@@ -7,7 +7,7 @@
     <div>
         <div class="inline">
             <form action="/question/{{question.id}}/delete" method="post">
-                <button type="submit" name="delete">Delete Question</button>
+                <button type="submit" name="delete">Delete question</button>
             </form>
             <form>
                 <input type="button" value="Edit question" onclick="window.location.href='/question/{{ question.id }}/edit'"/>
@@ -18,8 +18,8 @@
     </div>
     <div>
         <div class="inline">
-            <a href="/vote/{{ question.id }}/up/None"><img src="/static/icons/arrow_up.png" width="20" height="20" alt=""></a>
-            <a href="/vote/{{ question.id }}/down/None"><img src="/static/icons/arrow_down.png" width="20" height="20" alt=""></a>
+            <a href="/vote/{{ question.id }}/up/None"><img src="/static/icons/arrow_up.png" width="20" height="20"></a>
+            <a href="/vote/{{ question.id }}/down/None"><img src="/static/icons/arrow_down.png" width="20" height="20"></a>
         </div>
         <p>Submission time: {{ question.submission_time }} Views: {{ question.view_number }} Votes: {{ question.vote_number }}</p>
         <hr>
@@ -34,8 +34,8 @@
         {% for answer in answers %}
             <br><hr>
             <div class="inline">
-                <a href="/vote/{{ question.id }}/up/{{ answer.id }}"><img src="/static/icons/arrow_up.png" width="20" height="20" alt=""></a>
-                <a href="/vote/{{ question.id }}/down/{{ answer.id }}"><img src="/static/icons/arrow_down.png" width="20" height="20" alt=""></a>
+                <a href="/vote/{{ question.id }}/up/{{ answer.id }}"><img src="/static/icons/arrow_up.png" width="20" height="20"></a>
+                <a href="/vote/{{ question.id }}/down/{{ answer.id }}"><img src="/static/icons/arrow_down.png" width="20" height="20"></a>
                 <div class="delete-button">
                     <form action="/answer/{{answer.id}}/delete" method="post">
                         <button type="submit" name="delete_answer">Delete Answer</button>

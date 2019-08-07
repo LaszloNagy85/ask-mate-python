@@ -21,7 +21,7 @@ def get_all_data(cursor, table):
 # if the col_value is a string, use "'col_value'"
 @database_connection.connection_handler
 def get_columns_by_attribute(cursor, col_list, table, col_name, col_value):
-    query_for_func = sql.SQL('SELECT {} FROM {} WHERE {} = {}').format(
+    query_for_func = sql.SQL('SELECT {} FROM {} WHERE {} = {} ORDER BY submission_time').format(
         sql.SQL(', ').join(map(sql.Identifier, col_list)),
         sql.Identifier(table),
         sql.Identifier(col_name),
@@ -170,6 +170,28 @@ def get_sorted_data(cursor, sort_by, direction):# N
     data = cursor.fetchall()
     return data
 
+@database_connection.connection_handler
+def get_all_sorted_questions(cursor, sort_by, direction):# N
+    if direction == "asc":
+        cursor.execute(
+            sql.SQL("""SELECT
+                id,
+                submission_time,
+                view_number, vote_number,
+                title
+                FROM question
+                ORDER BY {sort_by} ASC""").format(sort_by=sql.Identifier(sort_by)))
+    elif direction == "desc":
+        cursor.execute(
+            sql.SQL("""SELECT
+                        id,
+                        submission_time,
+                        view_number, vote_number,
+                        title
+                        FROM question
+                        ORDER BY {sort_by} DESC""").format(sort_by=sql.Identifier(sort_by)))
+    data = cursor.fetchall()
+    return data
 
 # def save_vote(file_name, question_id, vote_type, data_header, answer_id):  # Z
 #     existing_votes = connection.get_all_data_from_file(file_name)

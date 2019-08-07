@@ -19,9 +19,6 @@ def route_question(question_id):
     question = data_manager.get_columns_by_attribute(QUESTION, 'question', 'id', question_id)
     answers = data_manager.get_columns_by_attribute(ANSWER, 'answer', 'question_id', question_id)
 
-    #data_manager.convert_readable_dates(question)
-    #data_manager.convert_readable_dates(answers)
-
     return render_template('question.html',
                            question=question,
                            answers=answers,
@@ -37,7 +34,7 @@ def route_question(question_id):
 def route_question_counted(question_id):
     question = data_manager.get_columns_by_attribute(['view_number'], 'question', 'id', question_id)
     url = str(request.referrer)
-    if url == 'http://127.0.0.1:8000/' or '?sort_by=' in url:
+    if url == 'http://127.0.0.1:8000/' or url == 'http://127.0.0.1:8000/list' or '?sort_by=' in url:
         view_number = int(question['view_number']) + 1
         data_manager.update_data(['view_number', 'id'], [view_number, question_id], 'question', question_id)
 
@@ -66,6 +63,8 @@ def route_new_answer(question_id):
 
 @app.route('/')
 def route_list_of_questions():
+    ORDER = 4
+    DIRECTION = 2
     sort_by = 'submission_time'
     direction = 'desc'
     if 'sort_by' in request.args:
@@ -83,7 +82,10 @@ def route_list_of_questions():
                            sort_options=SORT_OPTIONS,
                            sort_titles=SORT_TITLES,
                            directions=['Ascending', 'Descending'],
-                           reverse_options=['asc', 'desc'])
+                           reverse_options=['asc', 'desc'],
+                           order_by=ORDER,
+                           order=DIRECTION,
+                           form_action='/')
 
 
 @app.route('/add-question', methods=['GET', 'POST'])
@@ -188,6 +190,34 @@ def route_delete_answer(answer_id):
         data_manager.delete_answer_db(answer_id)
 
     return redirect(f'/question/{question_id}')
+
+
+
+@app.route('/list')
+def all_questions():
+    ORDER = 4
+    DIRECTION = 2
+    sort_by = 'submission_time'
+    direction = 'desc'
+    if 'sort_by' in request.args:
+        sort_by = request.args.get('sort_by')
+    if 'direction' in request.args:
+        direction = request.args.get('direction')
+    data = data_manager.get_all_sorted_questions(sort_by, direction)
+    answers = data_manager.get_data_by_attributes(['id', 'question_id', 'message'], 'answer')
+
+    return render_template('list.html',
+                           questions=data,
+                           answers=answers,
+                           sort_by=sort_by,
+                           direction=direction,
+                           sort_options=SORT_OPTIONS,
+                           sort_titles=SORT_TITLES,
+                           directions=['Ascending', 'Descending'],
+                           reverse_options=['asc', 'desc'],
+                           order_by=ORDER,
+                           order=DIRECTION,
+                           form_action='/list')
 
 
 if __name__ == '__main__':

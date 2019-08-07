@@ -6,9 +6,28 @@
 
 {% block content %}
     <h2>Questions</h2>
-    <br>
-    <a id="ask" href="/add-question">Ask a question</a>
+    <input type="button" value="Ask a question" onclick="window.location.href='/add-question'"/>
     <br><br>
+        <form action={{ form_action }} method="GET">
+        <label for="sort"> Sort Questions by:</label>
+        <select id="sort" name="sort_by">
+            {% for value in range(order_by) %}
+                <option {%  if sort_by == sort_options[value] %}selected{% endif %}
+                        value={{ sort_options[value] }}>{{ sort_titles[value] }}</option>
+            {% endfor %}
+        </select>
+        <label for="direction">Order</label>
+        <select id="direction" name="direction">
+            {% for value in range(order) %}
+                <option {% if reverse_options[value] == direction %}selected{% endif %}
+                        value="{{ reverse_options[value] }}">{{ directions[value] }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Sort it!</button>
+            <div class="inline">
+                <input type="button" value="Show all questions" onclick="window.location.href='/list'"/>
+            </div>
+    </form>
     <hr>
         {% for question in questions %}
             <p>
@@ -28,26 +47,4 @@
             </details>
             <hr>
         {% endfor %}
-
-    <form action="/" method="GET">
-        <label for="sort"> Sort Questions by:</label>
-        <select id="sort" name="sort_by">
-            {% for i in range(4) %}
-                <option {%  if sort_by == sort_options[i] %}selected{% endif %}
-                        value={{ sort_options[i] }}>{{ sort_titles[i] }}</option>
-            {% endfor %}
-        </select>
-
-        <label for="direction">Order</label>
-        <select id="direction" name="direction">
-            {% for j in range(2) %}
-                <option {% if reverse_options[j] == direction %}selected{% endif %}
-                        value="{{ reverse_options[j] }}">{{ directions[j] }}</option>
-            {% endfor %}
-
-        </select>
-        <p>
-            <button type="submit">Sort it!</button>
-        </p>
-    </form>
 {% endblock %}
