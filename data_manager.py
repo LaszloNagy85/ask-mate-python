@@ -171,14 +171,24 @@ def get_sorted_data(cursor, sort_by, direction):# N
     return data
 
 
-def save_vote(file_name, question_id, vote_type, data_header, answer_id):  # Z
-    existing_votes = connection.get_all_data_from_file(file_name)
-    voted_id = question_id if answer_id == 'None' else answer_id
-    for row in existing_votes:
-        if row['id'] == voted_id:
-            modifier = 1 if vote_type == 'up' else -1
-            row['vote_number'] = str(int(row['vote_number']) + modifier) if row['vote_number'] else modifier
-    connection.write_votes(existing_votes, file_name, data_header)
+# def save_vote(file_name, question_id, vote_type, data_header, answer_id):  # Z
+#     existing_votes = connection.get_all_data_from_file(file_name)
+#     voted_id = question_id if answer_id == 'None' else answer_id
+#     for row in existing_votes:
+#         if row['id'] == voted_id:
+#             modifier = 1 if vote_type == 'up' else -1
+#             row['vote_number'] = str(int(row['vote_number']) + modifier) if row['vote_number'] else modifier
+#     connection.write_votes(existing_votes, file_name, data_header)
+
+@database_connection.connection_handler
+def save_vote(cursor, id_, vote_type, table):
+    vote_number = get_columns_by_attribute(['vote_number'], table, 'id', id_)['vote_number']
+    if vote_type == 'up':
+        vote_number += 1
+    elif vote_type == 'down':
+        vote_number -= 1
+    update_data(['vote_number', 'id'], [vote_number, id_], table, id_)
+
 
 
 def save_image(upload_path, request_files):
