@@ -1,10 +1,21 @@
 import connection
 import database_connection
 import util
+from psycopg2 import sql
 
 
-def get_all_data(file_name):  # Z
-    return connection.get_all_data_from_file(file_name)
+# def get_all_data(file_name):  # Z
+#     return connection.get_all_data_from_file(file_name)
+
+
+@database_connection.connection_handler
+def get_all_data(cursor, table):
+    query_for_func = sql.SQL('SELECT * FROM {}').format(
+                     sql.Identifier(table))
+    cursor.execute(query_for_func)
+    all_data = cursor.fetchall()
+
+    return all_data
 
 
 def get_selected_data(file_name, data_id, data_key):  # N (2 kell: fetchone, fetchall)
@@ -60,6 +71,24 @@ def delete_question(id_):  # E
     connection.write_remaining_data_to_file(remaining_questions, 'question', connection.DATA_HEADER_QUESTION)
 
 
+# def get_dict_of_specific_types(list_of_types, data):  # Z
+#     specific_data = []
+#     for row in data:
+#         specific_data.append({key: value for key, value in row.items() if key in list_of_types})
+#     return specific_data
+
+
+@database_connection.connection_handler
+def get_data_by_attributes(cursor, list_of_types, table):
+    query_for_func = sql.SQL('SELECT {} FROM {}').format(
+                     sql.SQL(', ').join(map(sql.Identifier, list_of_types)),
+                     sql.Identifier(table))
+    cursor.execute(query_for_func)
+    data_by_attributes = cursor.fetchall()
+
+    return data_by_attributes
+
+
 @database_connection.connection_handler
 def delete_question_db(cursor, question_id):
     cursor.execute("""
@@ -82,12 +111,31 @@ def get_dict_of_specific_types(list_of_types, data):  # Z
     return specific_data
 
 
-def add_data(data, file_name, data_header):  # Z
-    return connection.write_data_to_file(data, file_name, data_header)
+# def add_data(data, file_name, data_header):  # Z
+#     return connection.write_data_to_file(data, file_name, data_header)
 
 
-def update_data(data, file_name, data_header):  # Z
-    return connection.write_data_to_file(data, file_name, data_header, False)
+@database_connection.connection_handler
+def add_data(cursor, col_list, value_list, table):
+    query_for_func = sql.SQL('INSERT INTO {} ({}) VALUES ({})').format(
+                     sql.Identifier(table),
+                     sql.SQL(', ').join(map(sql.Identifier, col_list)),
+                     sql.SQL(', ').join(sql.Placeholder() * len(value_list)))
+    cursor.execute(query_for_func, value_list)
+
+
+# def update_data(data, file_name, data_header):  # Z
+#     return connection.write_data_to_file(data, file_name, data_header, False)
+
+
+@database_connection.connection_handler
+def update_data(cursor, col_list, value_list, table, id_):
+    query_for_func = sql.SQL('UPDATE {} SET ({}) = ({}) WHERE id = {}').format(
+                     sql.Identifier(table),
+                     sql.SQL(', ').join(map(sql.Identifier, col_list)),
+                     sql.SQL(', ').join(sql.Placeholder() * len(value_list)),
+                     sql.SQL(id_))
+    cursor.execute(query_for_func, value_list)
 
 
 def get_sorted_data(file_name, sort_by, direction):  # N
