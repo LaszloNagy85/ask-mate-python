@@ -88,21 +88,21 @@ def route_list_of_questions():
 
 @app.route('/add-question', methods=['GET', 'POST'])
 def route_question_add():
-    generated_id = data_manager.generate_id('question')
+    # generated_id = data_manager.generate_id('question')
     if request.method == 'POST':
         image = data_manager.save_image(app.config['UPLOAD_FOLDER'], request.files)
 
         question = {
-            'id': generated_id,
-            'submission_time': util.get_epoch(),
+            'submission_time': util.get_timestamp(),
             'view_number': '0',
             'vote_number': '0',
             'title': request.form.get('title'),
             'message': request.form.get('message'),
             'image': image.filename if image else None,
         }
+        print(util.get_timestamp())
+        generated_id = data_manager.add_data(question.keys(), question.values(), 'question')
 
-        data_manager.add_data(question, 'question', DATA_HEADER_QUESTION)
         return redirect(f'/question/{generated_id}')
 
     return render_template('add-question.html',
@@ -115,26 +115,24 @@ def route_question_add():
 
 @app.route('/question/<question_id>/edit', methods=['GET', 'POST'])
 def route_question_update(question_id):
-    FIRST = 0
     if request.method == 'POST':
-        stored_data = data_manager.get_selected_data('question', question_id, 'id')
+        stored_data = data_manager.get_columns_by_attribute(DATA_HEADER_QUESTION, 'question', 'id', question_id)
 
         image = data_manager.save_image(app.config['UPLOAD_FOLDER'], request.files)
 
         question = {
-            'id': question_id,
-            'submission_time': util.get_epoch(),
-            'view_number': stored_data[FIRST]['view_number'],
-            'vote_number': stored_data[FIRST]['vote_number'],
+            'submission_time': util.get_timestamp(),
+            'view_number': stored_data['view_number'],
+            'vote_number': stored_data['vote_number'],
             'title': request.form.get('title'),
             'message': request.form.get('message'),
-            'image': image.filename if image else stored_data[FIRST]['image']
+            'image': image.filename if image else stored_data['image']
         }
 
-        data_manager.update_data(question, 'question', DATA_HEADER_QUESTION)
+        data_manager.update_data(['title', 'message'], [question['title'], question['message']], 'question')
         return redirect(f'/question/{question_id}')
 
-    question = data_manager.get_selected_data('question', question_id, 'id')
+    question = data_manager.get_columns_by_attribute(DATA_HEADER_QUESTION, 'question', 'id', question_id)
 
     return render_template('add-question.html',
                            question=question,
