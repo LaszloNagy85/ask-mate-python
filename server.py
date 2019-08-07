@@ -165,7 +165,7 @@ def route_delete_question(question_id):
 @app.route('/answer/<answer_id>/delete/', methods=['POST'])
 def route_delete_answer(answer_id):
     if request.method == 'POST':
-        data_of_answer = data_manager.get_columns_by_attribute(['question_id', 'image'], 'answer', 'answer_id', answer_id)
+        data_of_answer = data_manager.get_columns_by_attribute(['question_id', 'image'], 'answer', 'id', answer_id)
         question_id = data_of_answer['question_id']
 
         if data_of_answer['image']:
