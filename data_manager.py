@@ -60,6 +60,21 @@ def delete_question(id_):  # E
     connection.write_remaining_data_to_file(remaining_questions, 'question', connection.DATA_HEADER_QUESTION)
 
 
+@database_connection.connection_handler
+def delete_question_db(cursor, question_id):
+    cursor.execute("""
+                    DELETE FROM question
+                    WHERE id = %(question_id)s;
+                    """,
+                   {'question_id': question_id})
+
+    cursor.execute("""
+                    DELETE FROM answer
+                    WHERE question_id = %(question_id)s;
+                    """,
+                   {'question_id': question_id})
+
+
 def get_dict_of_specific_types(list_of_types, data):  # Z
     specific_data = []
     for row in data:
