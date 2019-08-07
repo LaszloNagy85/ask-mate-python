@@ -31,24 +31,24 @@ def get_all_data_of_one_type(type_, file_name):  # do we need this?
     return selected_data
 
 
-def generate_id(file_name):  # delete
-    all_data = connection.get_all_data_from_file(file_name)
-    return util.get_id(all_data)
+# def generate_id(file_name):  # delete
+#     all_data = connection.get_all_data_from_file(file_name)
+#     return util.get_id(all_data)
 
 
-def convert_readable_dates(data):  # delete
-    for row in data:
-        row['submission_time'] = util.convert_epoch_to_readable(row['submission_time'])
+# def convert_readable_dates(data):  # delete
+#     for row in data:
+#         row['submission_time'] = util.convert_epoch_to_readable(row['submission_time'])
 
 
-def delete_answer(id_, id_key):  # E
-    remaining_answers = []
-    all_answers = get_all_data('answer')
-    for answer in all_answers:
-        if id_ != answer[id_key]:
-            remaining_answers.append(answer)
-
-    connection.write_remaining_data_to_file(remaining_answers, 'answer', connection.DATA_HEADER_ANSWER)
+# def delete_answer(id_, id_key):  # E
+#     remaining_answers = []
+#     all_answers = get_all_data('answer')
+#     for answer in all_answers:
+#         if id_ != answer[id_key]:
+#             remaining_answers.append(answer)
+#
+#     connection.write_remaining_data_to_file(remaining_answers, 'answer', connection.DATA_HEADER_ANSWER)
 
 
 @database_connection.connection_handler
@@ -60,15 +60,15 @@ def delete_answer_db(cursor, answer_id):
                    {'answer': answer_id})
 
 
-def delete_question(id_):  # E
-    remaining_questions = []
-    all_questions = get_all_data('question')
-    for question in all_questions:
-        if id_ != question['id']:
-            remaining_questions.append(question)
-        else:
-            delete_answer(id_, 'question_id')
-    connection.write_remaining_data_to_file(remaining_questions, 'question', connection.DATA_HEADER_QUESTION)
+# def delete_question(id_):  # E
+#     remaining_questions = []
+#     all_questions = get_all_data('question')
+#     for question in all_questions:
+#         if id_ != question['id']:
+#             remaining_questions.append(question)
+#         else:
+#             delete_answer(id_, 'question_id')
+#     connection.write_remaining_data_to_file(remaining_questions, 'question', connection.DATA_HEADER_QUESTION)
 
 
 # def get_dict_of_specific_types(list_of_types, data):  # Z
@@ -102,13 +102,6 @@ def delete_question_db(cursor, question_id):
                     WHERE question_id = %(question_id)s;
                     """,
                    {'question_id': question_id})
-
-
-def get_dict_of_specific_types(list_of_types, data):  # Z
-    specific_data = []
-    for row in data:
-        specific_data.append({key: value for key, value in row.items() if key in list_of_types})
-    return specific_data
 
 
 # def add_data(data, file_name, data_header):  # Z
