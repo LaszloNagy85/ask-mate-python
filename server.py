@@ -25,9 +25,8 @@ def route_question(question_id):
                            form_url=url_for('route_new_answer', question_id=question_id),
                            page_title='Display a question',
                            button_title='Save new answer',
-                           )
-
-
+                           stored_answer='',
+                           legend='Write new answer')
 
 
 @app.route('/question/counted/<question_id>/')
@@ -138,7 +137,7 @@ def route_question_update(question_id):
     return render_template('add-question.html',
                            question=question,
                            form_url=url_for('route_question_update', question_id=question_id),
-                           page_title='Edit a question',
+                           page_title='Edit question',
                            button_title='Update question',
                            )
 
@@ -219,6 +218,35 @@ def all_questions():
                            order=DIRECTION,
                            form_action='/list')
 
+
+@app.route('/question/<question_id>/<answer_id>/edit', methods=['GET', 'POST'])
+def route_answer_update(question_id, answer_id):
+    if request.method == 'POST':
+        stored_data = data_manager.get_columns_by_attribute(['image'], 'answer', 'id', answer_id)
+
+        image = data_manager.save_image(app.config['UPLOAD_FOLDER'], request.files)
+
+        answer = {
+            'submission_time': util.get_timestamp(),
+            'message': request.form.get('message'),
+            'image': image.filename if image else stored_data['image']
+        }
+
+        data_manager.update_data(['message', 'submission_time', 'image'], [answer['message'], answer['submission_time'], answer['image']], 'answer', answer_id)
+        return redirect(f'/question/{question_id}#{answer_id}')
+
+    question = data_manager.get_columns_by_attribute(QUESTION, 'question', 'id', question_id)
+    answers = data_manager.get_columns_by_attribute(ANSWER, 'answer', 'question_id', question_id)
+    answer = data_manager.get_columns_by_attribute(['message', 'image'], 'answer', 'id', answer_id)
+
+    return render_template('question.html',
+                           question=question,
+                           answers=answers,
+                           page_title='Edit answer',
+                           button_title='Update answer',
+                           stored_answer=answer['message'],
+                           legend='Edit answer'
+                           )
 
 if __name__ == '__main__':
     app.run(
