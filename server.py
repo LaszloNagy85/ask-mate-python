@@ -16,14 +16,14 @@ SORT_TITLES = ['Submission time', 'View number', 'Vote number', 'Title']
 
 @app.route('/question/<question_id>/')
 def route_question(question_id):
-    question = data_manager.get_selected_data('question', question_id, 'id')
-    answers = data_manager.get_selected_data('answer', question_id, 'question_id')
+    question = data_manager.get_columns_by_attribute(QUESTION, 'question', 'id', question_id)
+    answers = data_manager.get_columns_by_attribute(ANSWER, 'answer', 'question_id', question_id)
 
-    data_manager.convert_readable_dates(question)
-    data_manager.convert_readable_dates(answers)
+    #data_manager.convert_readable_dates(question)
+    #data_manager.convert_readable_dates(answers)
 
     return render_template('question.html',
-                           question=question[0],
+                           question=question,
                            answers=answers,
                            form_url=url_for('route_new_answer', question_id=question_id),
                            page_title='Display a question',
@@ -33,13 +33,11 @@ def route_question(question_id):
 
 @app.route('/question/counted/<question_id>/')
 def route_question_counted(question_id):
-    question = data_manager.get_selected_data('question', question_id, 'id')
+    question = data_manager.get_columns_by_attribute(['view_number'], 'question', 'id', question_id)
     url = str(request.referrer)
     if url == 'http://127.0.0.1:8000/' or '?sort_by=' in url:
-        view_number = int(question[0]['view_number'])
-        view_number += 1
-        question[0]['view_number'] = view_number
-        data_manager.update_data(question[0], 'question', DATA_HEADER_QUESTION)
+        view_number = int(question['view_number']) + 1
+        data_manager.update_data(['view_number', 'id'], [view_number, question_id], 'question', question_id)
 
     return redirect(f'/question/{question_id}')
 
