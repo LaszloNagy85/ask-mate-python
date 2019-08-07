@@ -11,19 +11,19 @@
         <input type="hidden" name="id" value="{{ question['id'] }}">
         <p>
             <label for="title">Question title:</label><br>
-            <input type="text" size="75" name="title" id="title" required minlength="12" maxlength="150" value="{{ question[0]['title'] }}">
+            <input type="text" size="75" name="title" id="title" required minlength="12" maxlength="150" value="{{ question['title'] }}">
         </p>
         <p>
             <label for="message">Message:</label><br>
-            <textarea name="message" id="message" rows="20" cols="118" required>{{ question[0]['message']|safe }}</textarea>
+            <textarea name="message" id="message" rows="20" cols="118" required>{{ question['message']|safe }}</textarea>
         </p>
         <p>
             <label for="image">Upload picture</label>
             <input id="image" name="image" type="file" accept="image/png, image/jpeg">
-            {%  if question[0]['image'] == '' %}
+            {%  if question['image'] == '' %}
                 No file uploaded
-            {% elif question[0]['image'] %}
-                Uploaded file: {{ question[0]['image'] }}
+            {% elif question['image'] %}
+                Uploaded file: {{ question['image'] }}
             {%  endif %}
         </p>
         <p>

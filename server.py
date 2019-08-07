@@ -8,22 +8,22 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = "static/images"
 
 
-DATA_HEADER_QUESTION = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
-DATA_HEADER_ANSWER = ['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
+QUESTION = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
+ANSWER = ['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
 SORT_OPTIONS = ['submission_time', 'view_number', 'vote_number', 'title']
 SORT_TITLES = ['Submission time', 'View number', 'Vote number', 'Title']
 
 
 @app.route('/question/<question_id>/')
 def route_question(question_id):
-    question = data_manager.get_selected_data('question', question_id, 'id')
-    answers = data_manager.get_selected_data('answer', question_id, 'question_id')
+    question = data_manager.get_columns_by_attribute(QUESTION, 'question', 'id', question_id)
+    answers = data_manager.get_columns_by_attribute(ANSWER, 'answer', 'question_id', question_id)
 
-    data_manager.convert_readable_dates(question)
-    data_manager.convert_readable_dates(answers)
+    #data_manager.convert_readable_dates(question)
+    #data_manager.convert_readable_dates(answers)
 
     return render_template('question.html',
-                           question=question[0],
+                           question=question,
                            answers=answers,
                            form_url=url_for('route_new_answer', question_id=question_id),
                            page_title='Display a question',
@@ -31,15 +31,15 @@ def route_question(question_id):
                            )
 
 
+
+
 @app.route('/question/counted/<question_id>/')
 def route_question_counted(question_id):
-    question = data_manager.get_selected_data('question', question_id, 'id')
+    question = data_manager.get_columns_by_attribute(['view_number'], 'question', 'id', question_id)
     url = str(request.referrer)
     if url == 'http://127.0.0.1:8000/' or '?sort_by=' in url:
-        view_number = int(question[0]['view_number'])
-        view_number += 1
-        question[0]['view_number'] = view_number
-        data_manager.update_data(question[0], 'question', DATA_HEADER_QUESTION)
+        view_number = int(question['view_number']) + 1
+        data_manager.update_data(['view_number', 'id'], [view_number, question_id], 'question', question_id)
 
     return redirect(f'/question/{question_id}')
 
@@ -73,7 +73,7 @@ def route_list_of_questions():
     if 'direction' in request.args:
         direction = request.args.get('direction')
     data = data_manager.get_sorted_data(sort_by, direction)
-    answers = data_manager.provisional_get_data('answer')
+    answers = data_manager.get_data_by_attributes(['id', 'question_id', 'message'], 'answer')
 
     return render_template('list.html',
                            questions=data,
@@ -88,13 +88,11 @@ def route_list_of_questions():
 
 @app.route('/add-question', methods=['GET', 'POST'])
 def route_question_add():
-    generated_id = data_manager.generate_id('question')
     if request.method == 'POST':
         image = data_manager.save_image(app.config['UPLOAD_FOLDER'], request.files)
 
         question = {
-            'id': generated_id,
-            'submission_time': util.get_epoch(),
+            'submission_time': util.get_timestamp(),
             'view_number': '0',
             'vote_number': '0',
             'title': request.form.get('title'),
@@ -102,11 +100,12 @@ def route_question_add():
             'image': image.filename if image else None,
         }
 
-        data_manager.add_data(question, 'question', DATA_HEADER_QUESTION)
+        generated_id = data_manager.add_data(question.keys(), list(question.values()), 'question')
+
         return redirect(f'/question/{generated_id}')
 
     return render_template('add-question.html',
-                           question=[{}],
+                           question={},
                            form_url=url_for('route_question_add'),
                            page_title='Ask a question',
                            button_title='Save question',
@@ -115,26 +114,24 @@ def route_question_add():
 
 @app.route('/question/<question_id>/edit', methods=['GET', 'POST'])
 def route_question_update(question_id):
-    FIRST = 0
     if request.method == 'POST':
-        stored_data = data_manager.get_selected_data('question', question_id, 'id')
+        stored_data = data_manager.get_columns_by_attribute(QUESTION, 'question', 'id', question_id)
 
         image = data_manager.save_image(app.config['UPLOAD_FOLDER'], request.files)
 
         question = {
-            'id': question_id,
-            'submission_time': util.get_epoch(),
-            'view_number': stored_data[FIRST]['view_number'],
-            'vote_number': stored_data[FIRST]['vote_number'],
+            'submission_time': util.get_timestamp(),
+            'view_number': stored_data['view_number'],
+            'vote_number': stored_data['vote_number'],
             'title': request.form.get('title'),
             'message': request.form.get('message'),
-            'image': image.filename if image else stored_data[FIRST]['image']
+            'image': image.filename if image else stored_data['image']
         }
 
-        data_manager.update_data(question, 'question', DATA_HEADER_QUESTION)
+        data_manager.update_data(['title', 'message'], [question['title'], question['message']], 'question', question_id)
         return redirect(f'/question/{question_id}')
 
-    question = data_manager.get_selected_data('question', question_id, 'id')
+    question = data_manager.get_columns_by_attribute(QUESTION, 'question', 'id', question_id)
 
     return render_template('add-question.html',
                            question=question,
@@ -144,24 +141,37 @@ def route_question_update(question_id):
                            )
 
 
-@app.route('/vote/<file_name>/<question_id>/<vote_type>/<answer_id>')
-def vote(file_name, question_id, vote_type, answer_id):
-    header = DATA_HEADER_QUESTION if answer_id == 'None' else DATA_HEADER_ANSWER
-    data_manager.save_vote(file_name, question_id, vote_type, header, answer_id)
-    return redirect(f"/question/{question_id}")
+# @app.route('/vote/<file_name>/<question_id>/<vote_type>/<answer_id>')
+# def vote(file_name, question_id, vote_type, answer_id):
+#     header = QUESTION if answer_id == 'None' else DATA_HEADER_ANSWER
+#     data_manager.save_vote(file_name, question_id, vote_type, header, answer_id)
+#     return redirect(f"/question/{question_id}")
+
+
+@app.route('/vote/<question_id>/<vote_type>/<answer_id>')
+def vote(question_id, vote_type, answer_id):
+    if answer_id == 'None':
+        table = 'question'
+        id_ = question_id
+    else:
+        table = 'answer'
+        id_ = answer_id
+
+    data_manager.save_vote(id_, vote_type, table)
+    return redirect(f'/question/{question_id}')
 
 
 @app.route('/question/<question_id>/delete/', methods=['POST'])
 def route_delete_question(question_id):
     if request.method == 'POST':
 
-        question = data_manager.get_selected_data('question', question_id, 'id')[0]
-        answers = data_manager.get_selected_data('answer', question_id, 'question_id')
+        question = data_manager.get_columns_by_attribute(['image'], 'question', 'id', question_id)
+        answers = data_manager.get_columns_by_attribute(['image'], 'answer', 'question_id', question_id)
 
         image_filenames = [question['image']] + [answer['image'] for answer in answers]
         data_manager.delete_image(image_filenames, app.config['UPLOAD_FOLDER'])
 
-        data_manager.delete_question(question_id)
+        data_manager.delete_question_db(question_id)
 
         return redirect('/')
 
@@ -169,13 +179,13 @@ def route_delete_question(question_id):
 @app.route('/answer/<answer_id>/delete/', methods=['POST'])
 def route_delete_answer(answer_id):
     if request.method == 'POST':
-        data_of_answer = data_manager.get_selected_data('answer', answer_id, 'id')[0]
+        data_of_answer = data_manager.get_columns_by_attribute(['question_id', 'image'], 'answer', 'id', answer_id)
         question_id = data_of_answer['question_id']
 
         if data_of_answer['image']:
             os.remove(os.path.join(app.config['UPLOAD_FOLDER'], data_of_answer['image']))
 
-        data_manager.delete_answer(answer_id, 'id')
+        data_manager.delete_answer_db(answer_id)
 
     return redirect(f'/question/{question_id}')
 
