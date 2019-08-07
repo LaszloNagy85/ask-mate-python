@@ -31,6 +31,8 @@ def route_question(question_id):
                            )
 
 
+
+
 @app.route('/question/counted/<question_id>/')
 def route_question_counted(question_id):
     question = data_manager.get_columns_by_attribute(['view_number'], 'question', 'id', question_id)
@@ -86,7 +88,6 @@ def route_list_of_questions():
 
 @app.route('/add-question', methods=['GET', 'POST'])
 def route_question_add():
-    # generated_id = data_manager.generate_id('question')
     if request.method == 'POST':
         image = data_manager.save_image(app.config['UPLOAD_FOLDER'], request.files)
 
@@ -98,13 +99,13 @@ def route_question_add():
             'message': request.form.get('message'),
             'image': image.filename if image else None,
         }
-        print(util.get_timestamp())
-        generated_id = data_manager.add_data(question.keys(), question.values(), 'question')
+
+        generated_id = data_manager.add_data(question.keys(), list(question.values()), 'question')
 
         return redirect(f'/question/{generated_id}')
 
     return render_template('add-question.html',
-                           question=[{}],
+                           question={},
                            form_url=url_for('route_question_add'),
                            page_title='Ask a question',
                            button_title='Save question',
@@ -114,7 +115,7 @@ def route_question_add():
 @app.route('/question/<question_id>/edit', methods=['GET', 'POST'])
 def route_question_update(question_id):
     if request.method == 'POST':
-        stored_data = data_manager.get_columns_by_attribute(DATA_HEADER_QUESTION, 'question', 'id', question_id)
+        stored_data = data_manager.get_columns_by_attribute(QUESTION, 'question', 'id', question_id)
 
         image = data_manager.save_image(app.config['UPLOAD_FOLDER'], request.files)
 
@@ -127,10 +128,10 @@ def route_question_update(question_id):
             'image': image.filename if image else stored_data['image']
         }
 
-        data_manager.update_data(['title', 'message'], [question['title'], question['message']], 'question')
+        data_manager.update_data(['title', 'message'], [question['title'], question['message']], 'question', question_id)
         return redirect(f'/question/{question_id}')
 
-    question = data_manager.get_columns_by_attribute(DATA_HEADER_QUESTION, 'question', 'id', question_id)
+    question = data_manager.get_columns_by_attribute(QUESTION, 'question', 'id', question_id)
 
     return render_template('add-question.html',
                            question=question,
@@ -140,11 +141,24 @@ def route_question_update(question_id):
                            )
 
 
-@app.route('/vote/<file_name>/<question_id>/<vote_type>/<answer_id>')
-def vote(file_name, question_id, vote_type, answer_id):
-    header = DATA_HEADER_QUESTION if answer_id == 'None' else DATA_HEADER_ANSWER
-    data_manager.save_vote(file_name, question_id, vote_type, header, answer_id)
-    return redirect(f"/question/{question_id}")
+# @app.route('/vote/<file_name>/<question_id>/<vote_type>/<answer_id>')
+# def vote(file_name, question_id, vote_type, answer_id):
+#     header = QUESTION if answer_id == 'None' else DATA_HEADER_ANSWER
+#     data_manager.save_vote(file_name, question_id, vote_type, header, answer_id)
+#     return redirect(f"/question/{question_id}")
+
+
+@app.route('/vote/<question_id>/<vote_type>/<answer_id>')
+def vote(question_id, vote_type, answer_id):
+    if answer_id == 'None':
+        table = 'question'
+        id_ = question_id
+    else:
+        table = 'answer'
+        id_ = answer_id
+
+    data_manager.save_vote(id_, vote_type, table)
+    return redirect(f'/question/{question_id}')
 
 
 @app.route('/question/<question_id>/delete/', methods=['POST'])
