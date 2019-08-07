@@ -18,9 +18,22 @@ def get_all_data(cursor, table):
     return all_data
 
 
-def get_selected_data(file_name, data_id, data_key):  # N (2 kell: fetchone, fetchall)
-    existing_data = connection.get_all_data_from_file(file_name)
-    return [row for row in existing_data if row[data_key] == data_id]
+# if the col_value is a string, use "'col_value'"
+@database_connection.connection_handler
+def get_columns_by_attribute(cursor, col_list, table, col_name, col_value):
+    query_for_func = sql.SQL('SELECT {} FROM {} WHERE {} = {}').format(
+        sql.SQL(', ').join(map(sql.Identifier, col_list)),
+        sql.Identifier(table),
+        sql.Identifier(col_name),
+        sql.SQL(col_value))
+    cursor.execute(query_for_func)
+
+    if col_name == 'id':
+        data = cursor.fetchone()
+    else:
+        data = cursor.fetchall()
+
+    return data
 
 
 def get_all_data_of_one_type(type_, file_name):  # do we need this?
