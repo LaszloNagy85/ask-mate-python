@@ -93,8 +93,18 @@ def add_data(cursor, col_list, value_list, table):
     cursor.execute(query_for_func, value_list)
 
 
-def update_data(data, file_name, data_header):  # Z
-    return connection.write_data_to_file(data, file_name, data_header, False)
+# def update_data(data, file_name, data_header):  # Z
+#     return connection.write_data_to_file(data, file_name, data_header, False)
+
+
+@database_connection.connection_handler
+def update_data(cursor, col_list, value_list, table, id_):
+    query_for_func = sql.SQL('UPDATE {} SET ({}) = ({}) WHERE id = {}').format(
+                     sql.Identifier(table),
+                     sql.SQL(', ').join(map(sql.Identifier, col_list)),
+                     sql.SQL(', ').join(sql.Placeholder() * len(value_list)),
+                     sql.SQL(id_))
+    cursor.execute(query_for_func, value_list)
 
 
 def get_sorted_data(file_name, sort_by, direction):  # N
@@ -137,4 +147,5 @@ def delete_image(image_filenames, image_path):
             database_connection.remove_image(filename, image_path)
 
 
-add_data(['title', 'message'], ['valami', 'semmi'], 'question')
+# add_data(['title', 'message'], ['valami', 'semmi'], 'question')
+update_data(['title', 'message'], ['faszább', 'fasza'], 'question', '3')
