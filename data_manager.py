@@ -138,18 +138,28 @@ def update_data(cursor, col_list, value_list, table, id_):
     cursor.execute(query_for_func, value_list)
 
 
-def get_sorted_data(file_name, sort_by, direction):  # N
-    data_to_sort = get_all_data(file_name)
-    if sort_by == 'title':
-        is_int = str
-    else:
-        is_int = int
-    if direction == 'asc':
-        is_reverse = False
-    else:
-        is_reverse = True
-    sorted_data = sorted(data_to_sort, key=lambda x: is_int(x[sort_by]), reverse=is_reverse)
-    return sorted_data
+@database_connection.connection_handler
+def get_sorted_data(cursor, sort_by, direction):# N
+    if direction == "asc":
+        cursor.execute(
+            sql.SQL("""SELECT
+                id,
+                submission_time,
+                view_number, vote_number,
+                title
+                FROM question
+                ORDER BY {sort_by} ASC LIMIT 5""").format(sort_by=sql.Identifier(sort_by)))
+    elif direction == "desc":
+        cursor.execute(
+            sql.SQL("""SELECT
+                        id,
+                        submission_time,
+                        view_number, vote_number,
+                        title
+                        FROM question
+                        ORDER BY {sort_by} DESC LIMIT 5""").format(sort_by=sql.Identifier(sort_by)))
+    data = cursor.fetchall()
+    return data
 
 
 def save_vote(file_name, question_id, vote_type, data_header, answer_id):  # Z
