@@ -136,7 +136,7 @@ def add_data(cursor, col_list, value_list, table):
 
 @database_connection.connection_handler
 def update_data(cursor, col_list, value_list, table, id_):
-    query_for_func = sql.SQL('UPDATE {} SET ({}) = ({}) WHERE id = {}').format(
+    query_for_func = sql.SQL('UPDATE {} SET ({} ) = ({}) WHERE id = {}').format(
                      sql.Identifier(table),
                      sql.SQL(', ').join(map(sql.Identifier, col_list)),
                      sql.SQL(', ').join(sql.Placeholder() * len(value_list)),
