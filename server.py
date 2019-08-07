@@ -8,8 +8,8 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = "static/images"
 
 
-DATA_HEADER_QUESTION = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
-DATA_HEADER_ANSWER = ['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
+QUESTION = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
+ANSWER = ['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
 SORT_OPTIONS = ['submission_time', 'view_number', 'vote_number', 'title']
 SORT_TITLES = ['Submission time', 'View number', 'Vote number', 'Title']
 
@@ -155,13 +155,13 @@ def vote(file_name, question_id, vote_type, answer_id):
 def route_delete_question(question_id):
     if request.method == 'POST':
 
-        question = data_manager.get_selected_data('question', question_id, 'id')[0]
-        answers = data_manager.get_selected_data('answer', question_id, 'question_id')
+        question = data_manager.get_columns_by_attribute(['image'], 'question', 'id', question_id)
+        answers = data_manager.get_columns_by_attribute(['image'], 'answer', 'question_id', question_id)
 
         image_filenames = [question['image']] + [answer['image'] for answer in answers]
         data_manager.delete_image(image_filenames, app.config['UPLOAD_FOLDER'])
 
-        data_manager.delete_question(question_id)
+        data_manager.delete_question_db(question_id)
 
         return redirect('/')
 
