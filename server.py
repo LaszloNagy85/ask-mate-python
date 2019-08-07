@@ -169,13 +169,13 @@ def route_delete_question(question_id):
 @app.route('/answer/<answer_id>/delete/', methods=['POST'])
 def route_delete_answer(answer_id):
     if request.method == 'POST':
-        data_of_answer = data_manager.get_selected_data('answer', answer_id, 'id')[0]
+        data_of_answer = data_manager.get_columns_by_attribute(['question_id', 'image'], 'answer', 'answer_id', answer_id)
         question_id = data_of_answer['question_id']
 
         if data_of_answer['image']:
             os.remove(os.path.join(app.config['UPLOAD_FOLDER'], data_of_answer['image']))
 
-        data_manager.delete_answer(answer_id, 'id')
+        data_manager.delete_answer_db(answer_id)
 
     return redirect(f'/question/{question_id}')
 
