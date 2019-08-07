@@ -123,12 +123,15 @@ def delete_question_db(cursor, question_id):
 
 @database_connection.connection_handler
 def add_data(cursor, col_list, value_list, table):
-    query_for_func = sql.SQL('INSERT INTO {} ({}) VALUES ({})').format(
+    query_for_func = sql.SQL('INSERT INTO {} ({}) VALUES ({}) RETURNING id').format(
                      sql.Identifier(table),
                      sql.SQL(', ').join(map(sql.Identifier, col_list)),
                      sql.SQL(', ').join(sql.Placeholder() * len(value_list)))
-    cursor.execute(query_for_func, value_list)
 
+    cursor.execute(query_for_func, value_list)
+    id_ = cursor.fetchone()
+
+    return id_['id']
 
 # def update_data(data, file_name, data_header):  # Z
 #     return connection.write_data_to_file(data, file_name, data_header, False)
@@ -192,3 +195,5 @@ def delete_image(image_filenames, image_path):
     for filename in image_filenames:
         if filename:
             database_connection.remove_image(filename, image_path)
+
+
