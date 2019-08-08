@@ -221,7 +221,10 @@ def route_answer_update(question_id, answer_id):
             'image': image.filename if image else stored_data['image']
         }
 
-        data_manager.update_data(['message', 'submission_time', 'image'], [answer['message'], answer['submission_time'], answer['image']], 'answer', answer_id)
+        data_manager.update_data(['message', 'submission_time', 'image'],
+                                 [answer['message'], answer['submission_time'],
+                                 answer['image']], 'answer',
+                                 answer_id)
         return redirect(f'/question/{question_id}#{answer_id}')
 
     question = data_manager.get_columns_by_attribute(QUESTION, 'question', 'id', question_id)
@@ -236,6 +239,37 @@ def route_answer_update(question_id, answer_id):
                            stored_answer=answer['message'],
                            legend='Edit answer'
                            )
+
+
+@app.route('/question/<question_id>/new_comment', methods=['POST'])
+def route_new_question_comment(question_id):
+
+    new_comment = {
+        'question_id': question_id,
+        'message': request.form.get("message"),
+        'submission_time': util.get_timestamp(),
+        'edited_count': 0,
+    }
+
+    data_manager.add_data(new_comment.keys(), list(new_comment.values()), 'comment')
+
+    return redirect('/question/<question_id>')
+
+
+@app.route('/answer/<answer_id>/new_answer', methods='POST')
+def route_new_answer_comment(answer_id):
+    question_id = data_manager.get_columns_by_attribute('question_id', 'answer', 'answer_id', answer_id)
+
+    new_comment = {
+        'question_id': question_id,
+        'answer_id': answer_id,
+        'message': request.form.get('message'),
+        'submission_time': util.get_timestamp(),
+        'edited_count': 0
+    }
+    data_manager.add_data(new_comment.keys(), list(new_comment.values()), 'comment')
+
+    return redirect('/question/<question_id>')
 
 
 if __name__ == '__main__':
