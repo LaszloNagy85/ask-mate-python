@@ -34,9 +34,9 @@ a.question {
     text-decoration: none;
     color: #276965;
 }
-.answer {
+.answer, .comment {
     color: #7a7a7a;
-    padding-left: 2em;
+    padding-left: 30px;
     white-space: pre-wrap;
 }
 img.uploaded {
@@ -53,9 +53,10 @@ textarea {
 .inline {
     float: right;
     display: inline-flex;
+    padding-top: 3px;
 }
 
-.message, .answer{
+.message, .answer, .comment{
     white-space: pre-wrap;
 }
 
@@ -70,9 +71,4 @@ button[type=submit], input[type=file], input[type=button] {
     text-align: center;
     color: white;
     margin: 0 5px
-}
-
-.comments {
-    padding: 0 0 0 20px;
-    background-color: lightgray;
 }
