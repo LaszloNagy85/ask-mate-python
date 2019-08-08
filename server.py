@@ -42,8 +42,6 @@ def route_question_counted(question_id):
 
 @app.route('/question/<question_id>/new-answer', methods=['POST'])
 def route_new_answer(question_id):
-    # new_answer_id = data_manager.generate_id('answer')
-    # submission_time = util.get_epoch()
     image = data_manager.save_image(app.config['UPLOAD_FOLDER'], request.files)
 
     new_answer = {
@@ -141,13 +139,6 @@ def route_question_update(question_id):
                            )
 
 
-# @app.route('/vote/<file_name>/<question_id>/<vote_type>/<answer_id>')
-# def vote(file_name, question_id, vote_type, answer_id):
-#     header = QUESTION if answer_id == 'None' else DATA_HEADER_ANSWER
-#     data_manager.save_vote(file_name, question_id, vote_type, header, answer_id)
-#     return redirect(f"/question/{question_id}")
-
-
 @app.route('/vote/<question_id>/<vote_type>/<answer_id>')
 def vote(question_id, vote_type, answer_id):
     if answer_id == 'None':
@@ -188,7 +179,6 @@ def route_delete_answer(answer_id):
         data_manager.delete_answer_db(answer_id)
 
     return redirect(f'/question/{question_id}')
-
 
 
 @app.route('/list')
@@ -246,6 +236,7 @@ def route_answer_update(question_id, answer_id):
                            stored_answer=answer['message'],
                            legend='Edit answer'
                            )
+
 
 if __name__ == '__main__':
     app.run(
