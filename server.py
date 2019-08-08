@@ -287,10 +287,10 @@ def route_delete_comment(comment_id):
     if request.method == 'POST':
         ids = data_manager.get_columns_by_attribute(['question_id', 'answer_id'], 'comment', 'id', comment_id)
 
-        if ids['question_id']:
+        if ids['question_id'] is not None:
             question_id = ids['question_id']
         else:
-            question_id = data_manager.get_columns_by_attribute('question_id', 'answer', 'id', ids['answer_id'])
+            question_id = data_manager.get_columns_by_attribute(['question_id'], 'answer', 'id', str(ids['answer_id']))
 
         data_manager.delete_from_db(comment_id, 'comment')
 
