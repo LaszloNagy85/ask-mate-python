@@ -10,6 +10,7 @@ app.config['UPLOAD_FOLDER'] = "static/images"
 
 QUESTION = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
 ANSWER = ['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
+COMMENT = ['id', 'question_id', 'answer_id', 'message', 'submission_time', 'edited_count']
 SORT_OPTIONS = ['submission_time', 'view_number', 'vote_number', 'title']
 SORT_TITLES = ['Submission time', 'View number', 'Vote number', 'Title']
 
@@ -18,10 +19,12 @@ SORT_TITLES = ['Submission time', 'View number', 'Vote number', 'Title']
 def route_question(question_id):
     question = data_manager.get_columns_by_attribute(QUESTION, 'question', 'id', question_id)
     answers = data_manager.get_columns_by_attribute(ANSWER, 'answer', 'question_id', question_id)
+    comment = data_manager.get_columns_by_attribute(COMMENT, 'comment', 'question_id', question_id)
 
     return render_template('question.html',
                            question=question,
                            answers=answers,
+                           comment=comment,
                            form_url=url_for('route_new_answer', question_id=question_id),
                            page_title='Display a question',
                            button_title='Save new answer',
