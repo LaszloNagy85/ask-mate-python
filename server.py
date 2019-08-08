@@ -164,10 +164,10 @@ def route_delete_question(question_id):
         question = data_manager.get_columns_by_attribute(['image'], 'question', 'id', question_id)
         answers = data_manager.get_columns_by_attribute(['image'], 'answer', 'question_id', question_id)
 
+        data_manager.delete_question_db(question_id)
+
         image_filenames = [question['image']] + [answer['image'] for answer in answers]
         data_manager.delete_image(image_filenames, app.config['UPLOAD_FOLDER'])
-
-        data_manager.delete_question_db(question_id)
 
         return redirect('/')
 
@@ -178,10 +178,10 @@ def route_delete_answer(answer_id):
         data_of_answer = data_manager.get_columns_by_attribute(['question_id', 'image'], 'answer', 'id', answer_id)
         question_id = data_of_answer['question_id']
 
+        data_manager.delete_answer_db(answer_id)
+
         if data_of_answer['image']:
             os.remove(os.path.join(app.config['UPLOAD_FOLDER'], data_of_answer['image']))
-
-        data_manager.delete_answer_db(answer_id)
 
     return redirect(f'/question/{question_id}')
 
