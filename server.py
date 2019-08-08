@@ -164,7 +164,8 @@ def route_delete_question(question_id):
         question = data_manager.get_columns_by_attribute(['image'], 'question', 'id', question_id)
         answers = data_manager.get_columns_by_attribute(['image'], 'answer', 'question_id', question_id)
 
-        data_manager.delete_question_db(question_id)
+        # data_manager.delete_question_db(question_id)
+        data_manager.delete_from_db(question_id, 'question')
 
         image_filenames = [question['image']] + [answer['image'] for answer in answers]
         data_manager.delete_image(image_filenames, app.config['UPLOAD_FOLDER'])
@@ -178,7 +179,8 @@ def route_delete_answer(answer_id):
         data_of_answer = data_manager.get_columns_by_attribute(['question_id', 'image'], 'answer', 'id', answer_id)
         question_id = data_of_answer['question_id']
 
-        data_manager.delete_answer_db(answer_id)
+        # data_manager.delete_answer_db(answer_id)
+        data_manager.delete_from_db(answer_id, 'answer')
 
         if data_of_answer['image']:
             os.remove(os.path.join(app.config['UPLOAD_FOLDER'], data_of_answer['image']))
@@ -289,7 +291,7 @@ def route_delete_comment(comment_id):
         else:
             question_id = data_manager.get_columns_by_attribute('question_id', 'answer', 'id', ids['answer_id'])
 
-        data_manager.delete_comment_db(comment_id)
+        data_manager.delete_from_db(comment_id, 'comment')
 
     return redirect(f'/question/{question_id}')
 
