@@ -42,20 +42,19 @@ def route_question_counted(question_id):
 
 @app.route('/question/<question_id>/new-answer', methods=['POST'])
 def route_new_answer(question_id):
-    new_answer_id = data_manager.generate_id('answer')
-    submission_time = util.get_epoch()
+    # new_answer_id = data_manager.generate_id('answer')
+    # submission_time = util.get_epoch()
     image = data_manager.save_image(app.config['UPLOAD_FOLDER'], request.files)
 
     new_answer = {
-        'id': new_answer_id,
-        'submission_time': submission_time,
+        'submission_time': util.get_timestamp(),
         'vote_number': '0',
         'question_id': question_id,
         'message': request.form.get('message'),
         'image': image.filename if image else None,
     }
 
-    data_manager.add_data(new_answer, 'answer', DATA_HEADER_ANSWER)
+    data_manager.add_data(new_answer.keys(), list(new_answer.values()), 'answer')
 
     return redirect(f'/question/{question_id}')
 
