@@ -5,7 +5,13 @@
 {% block content %}
 
     <div>
+        <h2>{{ question.title }}</h2>
+    </div>
+    <div>
+        <hr>
         <div class="inline">
+            <a href="/vote/{{ question.id }}/up/None"><img src="/static/icons/arrow_up.png" width="20" height="20"></a>
+            <a href="/vote/{{ question.id }}/down/None"><img src="/static/icons/arrow_down.png" width="20" height="20"></a>
             <form action="/question/{{question.id}}/delete" method="post">
                 <button type="submit" name="delete">Delete question</button>
             </form>
@@ -13,18 +19,18 @@
                 <input type="button" value="Edit question" onclick="window.location.href='/question/{{ question.id }}/edit'"/>
             </form>
         </div>
-        <h2>{{ question.title }}</h2>
+        <p>Submission time: {{ question.submission_time.strftime("%Y-%m-%d %H:%M") }} Views: {{ question.view_number }} Votes: {{ question.vote_number }}</p>
         <hr>
     </div>
     <div>
         <div class="inline">
-            <a href="/vote/{{ question.id }}/up/None"><img src="/static/icons/arrow_up.png" width="20" height="20"></a>
-            <a href="/vote/{{ question.id }}/down/None"><img src="/static/icons/arrow_down.png" width="20" height="20"></a>
+            <form action="/comments/{{ comment_id }}/delete" method="post">
+                <button type="submit" name="delete">X</button>
+            </form>
+            <form>
+                <input type="button" value="Edit comment" onclick="window.location.href='/comments/{{ comment_id }}/delete'"/>
+            </form>
         </div>
-        <p>Submission time: {{ question.submission_time }} Views: {{ question.view_number }} Votes: {{ question.vote_number }}</p>
-        <hr>
-    </div>
-    <div>
         <p class="message">{{ question.message.replace('<br>', '\n') }}</p>
         {% if question.image %}
             <p><img class="uploaded" src="/static/images/{{ question.image }}"></p>
@@ -65,7 +71,7 @@
                     <input type="button" value="Edit answer" onclick="window.location.href='/question/{{ question.id }}/{{ answer.id }}/edit#message'"/>
                 </form>
             </div>
-            <p>Submission time: {{ answer.submission_time }} Votes: {{ answer.vote_number }}</p>
+            <p>Submission time: {{ answer.submission_time.strftime("%Y-%m-%d %H:%M") }} Votes: {{ answer.vote_number }}</p>
             <hr>
             <p id="{{ answer.id }}" class="message">{{ answer.message.replace('<br>', '\n') }}</p>
         {% if answer.image %}
@@ -76,6 +82,14 @@
                 <summary>Show comments</summary>
                 {% for comment in comments %}
                     {% if comment.answer_id == answer.id %}
+                        <div class="inline">
+                            <form action="/comments/{{ comment_id }}/delete" method="post">
+                                <button type="submit" name="delete">X</button>
+                            </form>
+                            <form>
+                                <input type="button" value="Edit comment" onclick="window.location.href='/comments/{{ comment_id }}/delete'"/>
+                            </form>
+                        </div>
                         <p id="c.{{ comment.id }}" class="comment">{{ comment.message }}</p>
                     {% endif %}
                 {% endfor %}
