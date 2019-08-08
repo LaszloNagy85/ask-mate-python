@@ -277,7 +277,7 @@ def route_new_answer_comment(answer_id):
         'edited_count': 0
     }
     data_manager.add_data(new_comment.keys(), list(new_comment.values()), 'comment')
-    question_id = data_manager.get_columns_by_attribute(['id'], 'question', 'answer_id', answer_id)['id']
+    question_id = data_manager.get_columns_by_attribute(['question_id'], 'answer', 'id', answer_id)['question_id']
 
     return redirect(f'/question/{question_id}')
 
@@ -317,7 +317,7 @@ def route_edit_comment(comment_id):
         data_manager.update_data(['message', 'submission_time', 'edited_count'],
                                  [comment['message'], comment['submission_time'], comment['edited_count']],
                                  'comment', comment_id)
-        return redirect(f'/question/{question_id}#{comment_id}')
+        return redirect(f'/question/{question_id}#comment-{comment_id}')
 
     question = data_manager.get_columns_by_attribute(QUESTION, 'question', 'id', str(question_id))
     answers = data_manager.get_columns_by_attribute(ANSWER, 'answer', 'question_id', str(question_id))
