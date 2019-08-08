@@ -19,12 +19,12 @@ SORT_TITLES = ['Submission time', 'View number', 'Vote number', 'Title']
 def route_question(question_id):
     question = data_manager.get_columns_by_attribute(QUESTION, 'question', 'id', question_id)
     answers = data_manager.get_columns_by_attribute(ANSWER, 'answer', 'question_id', question_id)
-    comment = data_manager.get_columns_by_attribute(COMMENT, 'comment', 'question_id', question_id)
+    comment = data_manager.get_all_data('comment')
 
     return render_template('question.html',
                            question=question,
                            answers=answers,
-                           comment=comment,
+                           comments=comment,
                            form_url=url_for('route_new_answer', question_id=question_id),
                            page_title='Display a question',
                            button_title='Save new answer',
@@ -263,7 +263,7 @@ def route_new_question_comment(question_id):
     return redirect('/question/<question_id>')
 
 
-@app.route('/answer/<answer_id>/new_answer', methods='POST')
+@app.route('/answer/<answer_id>/new_answer', methods=['POST'])
 def route_new_answer_comment(answer_id):
     question_id = data_manager.get_columns_by_attribute('question_id', 'answer', 'answer_id', answer_id)
 

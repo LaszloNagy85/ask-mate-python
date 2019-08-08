@@ -34,7 +34,7 @@
         <details>
             <summary>Show comments</summary>
                 {% for comment in comments %}
-                    {% if question.id == comment.question_id and comment.answer_id == NULL%}
+                    {% if question.id == comment.question_id %}
                         <p id="c.{{ comment.id }}" class="comment">{{comment.message}}</p>
                     {% endif %}
                 {% endfor %}
@@ -76,7 +76,7 @@
                 <summary>Show comments</summary>
                 {% for comment in comments %}
                     {% if comment.answer_id == answer.id %}
-                        <p id="c.{{ comment.id }}" class="comment">{{comment.message}}</p>
+                        <p id="c.{{ comment.id }}" class="comment">{{ comment.message }}</p>
                     {% endif %}
                 {% endfor %}
                 <div>
