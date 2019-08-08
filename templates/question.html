@@ -35,12 +35,13 @@
                     {% if question.id == comment.question_id %}
                         <div class="inline">
                             <form action="/comments/{{ comment.id }}/delete" method="post">
-                                <button type="submit" name="delete">X</button>
+                                <button type="submit" name="delete">Delete comment</button>
                             </form>
                             <form>
                                 <input type="button" value="Edit comment" onclick="window.location.href='/comments/{{ comment.id }}/delete'"/>
                             </form>
                         </div>
+                        <p class="comment_header">{{ comment.submission_time }}{% if comment.edited_count %} (edited {{ comment.edited_count }} times){% endif %}</p>
                         <p id="c.{{ comment.id }}" class="comment">{{comment.message}}</p>
                     {% endif %}
                 {% endfor %}
@@ -64,7 +65,7 @@
                 <a href="/vote/{{ question.id }}/down/{{ answer.id }}"><img src="/static/icons/arrow_down.png" width="20" height="20"></a>
                 <div class="delete-button">
                     <form action="/answer/{{answer.id}}/delete" method="post">
-                        <button type="submit" name="delete_answer">Delete Answer</button>
+                        <button type="submit" name="delete_answer">Delete answer</button>
                     </form>
                 </div>
                 <form>
@@ -83,14 +84,15 @@
                 {% for comment in comments %}
                     {% if comment.answer_id == answer.id %}
                         <div class="inline">
-                            <form action="/comments/{{ comment_id }}/delete" method="post">
-                                <button type="submit" name="delete">X</button>
+                            <form action="/comments/{{ comment.id }}/delete" method="post">
+                                <button type="submit" name="delete">Delete comment</button>
                             </form>
                             <form>
-                                <input type="button" value="Edit comment" onclick="window.location.href='/comments/{{ comment_id }}/delete'"/>
+                                <input type="button" value="Edit comment" onclick="window.location.href='/comments/{{ comment.id }}/delete'"/>
                             </form>
                         </div>
-                        <p id="c.{{ comment.id }}" class="comment">{{ comment.message }}</p>
+                        <p class="comment_header">{{ comment.submission_time }}{% if comment.edited_count %} (edited {{ comment.edited_count }} times){% endif %}</p>
+                        <p id="c.{{ comment.id }}" class="comment">{{comment.message}}</p>
                     {% endif %}
                 {% endfor %}
                 <div>

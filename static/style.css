@@ -34,11 +34,16 @@ a.question {
     text-decoration: none;
     color: #276965;
 }
-.answer, .comment {
+.answer, .comment, .comment_header {
     color: #7a7a7a;
     padding-left: 30px;
     white-space: pre-wrap;
 }
+
+.comment_header {
+    font-size: 0.75em;
+}
+
 img.uploaded {
     display: block;
     horiz-align: center;
