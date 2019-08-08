@@ -21,7 +21,7 @@
             <a href="/vote/{{ question.id }}/up/None"><img src="/static/icons/arrow_up.png" width="20" height="20"></a>
             <a href="/vote/{{ question.id }}/down/None"><img src="/static/icons/arrow_down.png" width="20" height="20"></a>
         </div>
-        <p>Submission time: {{ question.submission_time }} Views: {{ question.view_number }} Votes: {{ question.vote_number }}</p>
+        <p>Submission time: {{ question.submission_time.strftime("%Y-%m-%d %H:%M") }} Views: {{ question.view_number }} Votes: {{ question.vote_number }}</p>
         <hr>
     </div>
     <div>
@@ -65,7 +65,7 @@
                     <input type="button" value="Edit answer" onclick="window.location.href='/question/{{ question.id }}/{{ answer.id }}/edit#message'"/>
                 </form>
             </div>
-            <p>Submission time: {{ answer.submission_time }} Votes: {{ answer.vote_number }}</p>
+            <p>Submission time: {{ answer.submission_time.strftime("%Y-%m-%d %H:%M") }} Votes: {{ answer.vote_number }}</p>
             <hr>
             <p id="{{ answer.id }}" class="message">{{ answer.message.replace('<br>', '\n') }}</p>
         {% if answer.image %}
