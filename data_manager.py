@@ -132,7 +132,7 @@ def get_all_sorted_questions(cursor, sort_by, direction):
 
 
 @database_connection.connection_handler
-def save_vote(id_, vote_type, table):
+def save_vote(cursor, id_, vote_type, table):
     vote_number = get_columns_by_attribute(['vote_number'], table, 'id', id_)['vote_number']
     if vote_type == 'up':
         vote_number += 1
