@@ -157,3 +157,11 @@ def delete_image(image_filenames, image_path):
             database_connection.remove_image(filename, image_path)
 
 
+@database_connection.connection_handler
+def delete_comment_db(cursor, comment_id):
+
+    cursor.execute("""
+                    DELETE FROM comment
+                    WHERE id = %(comment_id)s;
+                    """,
+                   {'question_id': comment_id})
