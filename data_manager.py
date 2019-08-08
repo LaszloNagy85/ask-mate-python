@@ -165,3 +165,10 @@ def delete_comment_db(cursor, comment_id):
                     WHERE id = %(comment_id)s;
                     """,
                    {'question_id': comment_id})
+
+
+@database_connection.connection_handler
+def delete_from_db(cursor, id_, table):
+
+    cursor.execute(
+            sql.SQL('DELETE FROM {} WHERE id = %(id)s').format(sql.Identifier(table)), {'id': id_})
