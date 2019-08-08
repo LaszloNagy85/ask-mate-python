@@ -77,3 +77,8 @@ button[type=submit], input[type=file], input[type=button] {
     color: white;
     margin: 0 5px
 }
+
+button[type=submit]:hover, input[type=file]:hover, input[type=button]:hover {
+    cursor: pointer;
+    background-color: #3B666B;
+}

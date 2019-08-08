@@ -42,14 +42,14 @@
                             </form>
                         </div>
                         <p class="comment_header">{{ comment.submission_time }}{% if comment.edited_count %} (edited {{ comment.edited_count }} times){% endif %}</p>
-                        <p id="c.{{ comment.id }}" class="comment">{{comment.message}}</p>
+                        <p id="comment-{{ comment.id }}" class="comment">{{comment.message}}</p>
                     {% endif %}
                 {% endfor %}
             <div>
                 <form action="{{ comment_question_action }}" method="post" enctype="multipart/form-data">
                 <p>
                     <label for="message">{{ comment_legend }}</label><br>
-                    <textarea id="message" name="message" required cols="50" rows="5">{{ stored_comment }}</textarea>
+                    <textarea id="question-comment" name="message" required cols="50" rows="5">{{ stored_comment }}</textarea>
                 </p>
                 <button type="submit">{{ comment_button }}</button>
 
@@ -88,18 +88,18 @@
                                 <button type="submit" name="delete">Delete comment</button>
                             </form>
                             <form>
-                                <input type="button" value="Edit comment" onclick="window.location.href='/comments/{{ comment.id }}/delete'"/>
+                                <input type="button" value="Edit comment" onclick="window.location.href='/comments/{{ comment.id }}/edit/{{ comment.edit_count }}'"/>
                             </form>
                         </div>
                         <p class="comment_header">{{ comment.submission_time }}{% if comment.edited_count %} (edited {{ comment.edited_count }} times){% endif %}</p>
-                        <p id="c.{{ comment.id }}" class="comment">{{comment.message}}</p>
+                        <p id="comment-{{ comment.id }}" class="comment">{{comment.message}}</p>
                     {% endif %}
                 {% endfor %}
                 <div>
-                    <form action="{{ comment_answer_action }}" method="post" enctype="multipart/form-data">
+                    <form action="/answer/{{answer.id}}/new_comment" method="post" enctype="multipart/form-data">
                     <p>
                         <label for="message">{{ comment_legend }}</label><br>
-                        <textarea id="message" name="message" required cols="50" rows="5">{{ stored_comment }}</textarea>
+                        <textarea id="" name="message" required cols="50" rows="5">{{ stored_comment }}</textarea>
                     </p>
                     <button type="submit">{{ comment_button }}</button>
 

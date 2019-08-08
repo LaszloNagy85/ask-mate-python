@@ -31,8 +31,7 @@ def route_question(question_id):
                            stored_answer='',
                            legend='Write new answer',
                            comment_button='Add new comment',
-                           comment_question_action=f'/question/{question_id}/new_comment',
-                           comment_answer_action=f'')
+                           comment_question_action=f'/question/{question_id}/new_comment')
 
 
 @app.route('/question/counted/<question_id>/')
@@ -268,7 +267,7 @@ def route_new_question_comment(question_id):
     return redirect(f'/question/{question_id}')
 
 
-@app.route('/answer/<answer_id>/new_answer', methods=['POST'])
+@app.route('/answer/<answer_id>/new_comment', methods=['POST'])
 def route_new_answer_comment(answer_id):
 
     new_comment = {
@@ -278,8 +277,9 @@ def route_new_answer_comment(answer_id):
         'edited_count': 0
     }
     data_manager.add_data(new_comment.keys(), list(new_comment.values()), 'comment')
+    question_id = data_manager.get_columns_by_attribute(['id'], 'question', 'answer_id', answer_id)['id']
 
-    return redirect('/question/<question_id>')
+    return redirect(f'/question/{question_id}')
 
 
 @app.route('/comments/<comment_id>/delete/', methods=['POST'])
