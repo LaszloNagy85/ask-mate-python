@@ -279,6 +279,21 @@ def route_new_answer_comment(answer_id):
     return redirect('/question/<question_id>')
 
 
+@app.route('/comments/<comment_id>/delete/', methods=['POST'])
+def route_delete_comment(comment_id):
+    if request.method == 'POST':
+        ids = data_manager.get_columns_by_attribute(['question_id', 'answer_id'], 'comment', 'id', comment_id)
+
+        if ids['question_id']:
+            question_id = ids['question_id']
+        else:
+            question_id = data_manager.get_columns_by_attribute('question_id', 'answer', 'id', ids['answer_id'])
+
+        data_manager.delete_comment_db(comment_id)
+
+    return redirect(f'/question/{question_id}')
+
+
 if __name__ == '__main__':
     app.run(
         port=8000,
