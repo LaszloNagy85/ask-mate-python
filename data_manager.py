@@ -1,11 +1,5 @@
-import connection
 import database_connection
-import util
 from psycopg2 import sql
-
-
-# def get_all_data(file_name):  # Z
-#     return connection.get_all_data_from_file(file_name)
 
 
 @database_connection.connection_handler
@@ -36,34 +30,6 @@ def get_columns_by_attribute(cursor, col_list, table, col_name, col_value):
     return data
 
 
-def get_all_data_of_one_type(type_, file_name):  # do we need this?
-    existing_data = connection.get_all_data_from_file(file_name)
-    selected_data = []
-    for row in existing_data:
-        selected_data.append(row[type_])
-    return selected_data
-
-
-# def generate_id(file_name):  # delete
-#     all_data = connection.get_all_data_from_file(file_name)
-#     return util.get_id(all_data)
-
-
-# def convert_readable_dates(data):  # delete
-#     for row in data:
-#         row['submission_time'] = util.convert_epoch_to_readable(row['submission_time'])
-
-
-# def delete_answer(id_, id_key):  # E
-#     remaining_answers = []
-#     all_answers = get_all_data('answer')
-#     for answer in all_answers:
-#         if id_ != answer[id_key]:
-#             remaining_answers.append(answer)
-#
-#     connection.write_remaining_data_to_file(remaining_answers, 'answer', connection.DATA_HEADER_ANSWER)
-
-
 @database_connection.connection_handler
 def delete_answer_db(cursor, answer_id):
     cursor.execute("""
@@ -71,24 +37,6 @@ def delete_answer_db(cursor, answer_id):
                     WHERE id = %(answer)s;
                     """,
                    {'answer': answer_id})
-
-
-# def delete_question(id_):  # E
-#     remaining_questions = []
-#     all_questions = get_all_data('question')
-#     for question in all_questions:
-#         if id_ != question['id']:
-#             remaining_questions.append(question)
-#         else:
-#             delete_answer(id_, 'question_id')
-#     connection.write_remaining_data_to_file(remaining_questions, 'question', connection.DATA_HEADER_QUESTION)
-
-
-# def get_dict_of_specific_types(list_of_types, data):  # Z
-#     specific_data = []
-#     for row in data:
-#         specific_data.append({key: value for key, value in row.items() if key in list_of_types})
-#     return specific_data
 
 
 @database_connection.connection_handler
@@ -104,21 +52,12 @@ def get_data_by_attributes(cursor, list_of_types, table):
 
 @database_connection.connection_handler
 def delete_question_db(cursor, question_id):
+
     cursor.execute("""
                     DELETE FROM question
                     WHERE id = %(question_id)s;
                     """,
                    {'question_id': question_id})
-
-    cursor.execute("""
-                    DELETE FROM answer
-                    WHERE question_id = %(question_id)s;
-                    """,
-                   {'question_id': question_id})
-
-
-# def add_data(data, file_name, data_header):  # Z
-#     return connection.write_data_to_file(data, file_name, data_header)
 
 
 @database_connection.connection_handler
@@ -133,9 +72,6 @@ def add_data(cursor, col_list, value_list, table):
 
     return id_['id']
 
-# def update_data(data, file_name, data_header):  # Z
-#     return connection.write_data_to_file(data, file_name, data_header, False)
-
 
 @database_connection.connection_handler
 def update_data(cursor, col_list, value_list, table, id_):
@@ -148,7 +84,7 @@ def update_data(cursor, col_list, value_list, table, id_):
 
 
 @database_connection.connection_handler
-def get_sorted_data(cursor, sort_by, direction):# N
+def get_sorted_data(cursor, sort_by, direction):
     if direction == "asc":
         cursor.execute(
             sql.SQL("""SELECT
@@ -170,8 +106,9 @@ def get_sorted_data(cursor, sort_by, direction):# N
     data = cursor.fetchall()
     return data
 
+
 @database_connection.connection_handler
-def get_all_sorted_questions(cursor, sort_by, direction):# N
+def get_all_sorted_questions(cursor, sort_by, direction):
     if direction == "asc":
         cursor.execute(
             sql.SQL("""SELECT
@@ -193,24 +130,15 @@ def get_all_sorted_questions(cursor, sort_by, direction):# N
     data = cursor.fetchall()
     return data
 
-# def save_vote(file_name, question_id, vote_type, data_header, answer_id):  # Z
-#     existing_votes = connection.get_all_data_from_file(file_name)
-#     voted_id = question_id if answer_id == 'None' else answer_id
-#     for row in existing_votes:
-#         if row['id'] == voted_id:
-#             modifier = 1 if vote_type == 'up' else -1
-#             row['vote_number'] = str(int(row['vote_number']) + modifier) if row['vote_number'] else modifier
-#     connection.write_votes(existing_votes, file_name, data_header)
 
 @database_connection.connection_handler
-def save_vote(cursor, id_, vote_type, table):
+def save_vote(id_, vote_type, table):
     vote_number = get_columns_by_attribute(['vote_number'], table, 'id', id_)['vote_number']
     if vote_type == 'up':
         vote_number += 1
     elif vote_type == 'down':
         vote_number -= 1
     update_data(['vote_number', 'id'], [vote_number, id_], table, id_)
-
 
 
 def save_image(upload_path, request_files):
