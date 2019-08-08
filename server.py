@@ -10,6 +10,7 @@ app.config['UPLOAD_FOLDER'] = "static/images"
 
 QUESTION = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
 ANSWER = ['id', 'submission_time', 'vote_number', 'question_id', 'message', 'image']
+COMMENT = ['id', 'question_id', 'answer_id', 'message', 'submission_time', 'edited_count']
 SORT_OPTIONS = ['submission_time', 'view_number', 'vote_number', 'title']
 SORT_TITLES = ['Submission time', 'View number', 'Vote number', 'Title']
 
@@ -18,10 +19,12 @@ SORT_TITLES = ['Submission time', 'View number', 'Vote number', 'Title']
 def route_question(question_id):
     question = data_manager.get_columns_by_attribute(QUESTION, 'question', 'id', question_id)
     answers = data_manager.get_columns_by_attribute(ANSWER, 'answer', 'question_id', question_id)
+    comment = data_manager.get_columns_by_attribute(COMMENT, 'comment', 'question_id', question_id)
 
     return render_template('question.html',
                            question=question,
                            answers=answers,
+                           comment=comment,
                            form_url=url_for('route_new_answer', question_id=question_id),
                            page_title='Display a question',
                            button_title='Save new answer',
@@ -225,7 +228,10 @@ def route_answer_update(question_id, answer_id):
             'image': image.filename if image else stored_data['image']
         }
 
-        data_manager.update_data(['message', 'submission_time', 'image'], [answer['message'], answer['submission_time'], answer['image']], 'answer', answer_id)
+        data_manager.update_data(['message', 'submission_time', 'image'],
+                                 [answer['message'], answer['submission_time'],
+                                 answer['image']], 'answer',
+                                 answer_id)
         return redirect(f'/question/{question_id}#{answer_id}')
 
     question = data_manager.get_columns_by_attribute(QUESTION, 'question', 'id', question_id)
@@ -240,6 +246,37 @@ def route_answer_update(question_id, answer_id):
                            stored_answer=answer['message'],
                            legend='Edit answer'
                            )
+
+
+@app.route('/question/<question_id>/new_comment', methods=['POST'])
+def route_new_question_comment(question_id):
+
+    new_comment = {
+        'question_id': question_id,
+        'message': request.form.get("message"),
+        'submission_time': util.get_timestamp(),
+        'edited_count': 0,
+    }
+
+    data_manager.add_data(new_comment.keys(), list(new_comment.values()), 'comment')
+
+    return redirect('/question/<question_id>')
+
+
+@app.route('/answer/<answer_id>/new_answer', methods='POST')
+def route_new_answer_comment(answer_id):
+    question_id = data_manager.get_columns_by_attribute('question_id', 'answer', 'answer_id', answer_id)
+
+    new_comment = {
+        'question_id': question_id,
+        'answer_id': answer_id,
+        'message': request.form.get('message'),
+        'submission_time': util.get_timestamp(),
+        'edited_count': 0
+    }
+    data_manager.add_data(new_comment.keys(), list(new_comment.values()), 'comment')
+
+    return redirect('/question/<question_id>')
 
 
 if __name__ == '__main__':
