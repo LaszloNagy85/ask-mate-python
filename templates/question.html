@@ -23,14 +23,6 @@
         <hr>
     </div>
     <div>
-        <div class="inline">
-            <form action="/comments/{{ comment_id }}/delete" method="post">
-                <button type="submit" name="delete">X</button>
-            </form>
-            <form>
-                <input type="button" value="Edit comment" onclick="window.location.href='/comments/{{ comment_id }}/delete'"/>
-            </form>
-        </div>
         <p class="message">{{ question.message.replace('<br>', '\n') }}</p>
         {% if question.image %}
             <p><img class="uploaded" src="/static/images/{{ question.image }}"></p>
@@ -41,6 +33,14 @@
             <summary>Show comments</summary>
                 {% for comment in comments %}
                     {% if question.id == comment.question_id %}
+                        <div class="inline">
+                            <form action="/comments/{{ comment.id }}/delete" method="post">
+                                <button type="submit" name="delete">X</button>
+                            </form>
+                            <form>
+                                <input type="button" value="Edit comment" onclick="window.location.href='/comments/{{ comment.id }}/delete'"/>
+                            </form>
+                        </div>
                         <p id="c.{{ comment.id }}" class="comment">{{comment.message}}</p>
                     {% endif %}
                 {% endfor %}
