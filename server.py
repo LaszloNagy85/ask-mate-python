@@ -265,10 +265,8 @@ def route_new_question_comment(question_id):
 
 @app.route('/answer/<answer_id>/new_answer', methods=['POST'])
 def route_new_answer_comment(answer_id):
-    question_id = data_manager.get_columns_by_attribute('question_id', 'answer', 'answer_id', answer_id)
 
     new_comment = {
-        'question_id': question_id,
         'answer_id': answer_id,
         'message': request.form.get('message'),
         'submission_time': util.get_timestamp(),
