@@ -88,7 +88,7 @@
                                 <button type="submit" name="delete">Delete comment</button>
                             </form>
                             <form>
-                                <input type="button" value="Edit comment" onclick="window.location.href='/comments/{{ comment.id }}/edit/{{ comment.edit_count }}'"/>
+                                <input type="button" value="Edit comment" onclick="window.location.href='/comments/{{ comment.id }}/edit'"/>
                             </form>
                         </div>
                         <p class="comment_header">{{ comment.submission_time }}{% if comment.edited_count %} (edited {{ comment.edited_count }} times){% endif %}</p>
