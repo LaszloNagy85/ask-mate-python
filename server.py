@@ -29,7 +29,10 @@ def route_question(question_id):
                            page_title='Display a question',
                            button_title='Save new answer',
                            stored_answer='',
-                           legend='Write new answer')
+                           legend='Write new answer',
+                           comment_button='Add new comment',
+                           comment_question_action=f'/question/{question_id}/new_comment',
+                           comment_answer_action=f'')
 
 
 @app.route('/question/counted/<question_id>/')

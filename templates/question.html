@@ -45,7 +45,7 @@
                     {% endif %}
                 {% endfor %}
             <div>
-                <form action="{{ form_url }}" method="post" enctype="multipart/form-data">
+                <form action="{{ comment_question_action }}" method="post" enctype="multipart/form-data">
                 <p>
                     <label for="message">{{ comment_legend }}</label><br>
                     <textarea id="message" name="message" required cols="50" rows="5">{{ stored_comment }}</textarea>
@@ -94,7 +94,7 @@
                     {% endif %}
                 {% endfor %}
                 <div>
-                    <form action="{{ form_url }}" method="post" enctype="multipart/form-data">
+                    <form action="{{ comment_answer_action }}" method="post" enctype="multipart/form-data">
                     <p>
                         <label for="message">{{ comment_legend }}</label><br>
                         <textarea id="message" name="message" required cols="50" rows="5">{{ stored_comment }}</textarea>
