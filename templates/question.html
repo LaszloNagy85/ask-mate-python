@@ -38,7 +38,7 @@
                                 <button type="submit" name="delete">X</button>
                             </form>
                             <form>
-                                <input type="button" value="Edit comment" onclick="window.location.href='/comments/{{ comment.id }}/delete'"/>
+                                <input type="button" value="Edit comment" onclick="window.location.href='/comments/{{ comment.id }}/edit'"/>
                             </form>
                         </div>
                         <p id="c.{{ comment.id }}" class="comment">{{comment.message}}</p>
@@ -87,7 +87,7 @@
                                 <button type="submit" name="delete">X</button>
                             </form>
                             <form>
-                                <input type="button" value="Edit comment" onclick="window.location.href='/comments/{{ comment_id }}/delete'"/>
+                                <input type="button" value="Edit comment" onclick="window.location.href='/comments/{{ comment.id }}/edit'"/>
                             </form>
                         </div>
                         <p id="c.{{ comment.id }}" class="comment">{{ comment.message }}</p>
