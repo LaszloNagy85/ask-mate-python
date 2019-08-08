@@ -42,8 +42,6 @@ a.question {
 
 .comment_header {
     font-size: 0.75em;
-    width: 100%;
-    background-color: rgba(26, 94, 68, 0.66);
 }
 
 img.uploaded {
@@ -83,4 +81,8 @@ button[type=submit], input[type=file], input[type=button] {
 button[type=submit]:hover, input[type=file]:hover, input[type=button]:hover {
     cursor: pointer;
     background-color: #3B666B;
+}
+
+.vote-icon {
+    padding: 4px;
 }

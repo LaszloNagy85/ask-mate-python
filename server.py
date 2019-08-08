@@ -57,9 +57,9 @@ def route_new_answer(question_id):
         'image': image.filename if image else None,
     }
 
-    data_manager.add_data(new_answer.keys(), list(new_answer.values()), 'answer')
+    answer_id = data_manager.add_data(new_answer.keys(), list(new_answer.values()), 'answer')
 
-    return redirect(f'/question/{question_id}')
+    return redirect(f'/question/{question_id}#{answer_id}')
 
 
 @app.route('/')
@@ -156,7 +156,7 @@ def vote(question_id, vote_type, answer_id):
         id_ = answer_id
 
     data_manager.save_vote(id_, vote_type, table)
-    return redirect(f'/question/{question_id}')
+    return redirect(f'/question/{question_id}#{answer_id}')
 
 
 @app.route('/question/<question_id>/delete/', methods=['POST'])

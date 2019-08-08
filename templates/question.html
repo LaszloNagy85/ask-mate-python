@@ -10,11 +10,13 @@
     <div>
         <hr>
         <div class="inline">
-            <a href="/vote/{{ question.id }}/up/None"><img src="/static/icons/arrow_up.png" width="20" height="20"></a>
-            <a href="/vote/{{ question.id }}/down/None"><img src="/static/icons/arrow_down.png" width="20" height="20"></a>
-            <form action="/question/{{question.id}}/delete" method="post">
-                <button type="submit" name="delete">Delete question</button>
-            </form>
+            <a class="vote-icon" href="/vote/{{ question.id }}/up/None"><img src="/static/icons/arrow_up.png" width="20" height="20"></a>
+            <a class="vote-icon" href="/vote/{{ question.id }}/down/None"><img src="/static/icons/arrow_down.png" width="20" height="20"></a>
+            <div class="delete-button">
+                <form action="/question/{{question.id}}/delete" method="post">
+                    <button  type="submit" name="delete">Delete question</button>
+                </form>
+            </div>
             <form>
                 <input type="button" value="Edit question" onclick="window.location.href='/question/{{ question.id }}/edit'"/>
             </form>
@@ -61,8 +63,8 @@
         {% for answer in answers %}
             <br><hr>
             <div class="inline">
-                <a href="/vote/{{ question.id }}/up/{{ answer.id }}"><img src="/static/icons/arrow_up.png" width="20" height="20"></a>
-                <a href="/vote/{{ question.id }}/down/{{ answer.id }}"><img src="/static/icons/arrow_down.png" width="20" height="20"></a>
+                <a class="vote-icon" href="/vote/{{ question.id }}/up/{{ answer.id }}"><img src="/static/icons/arrow_up.png" width="20" height="20"></a>
+                <a class="vote-icon" href="/vote/{{ question.id }}/down/{{ answer.id }}"><img src="/static/icons/arrow_down.png" width="20" height="20"></a>
                 <div class="delete-button">
                     <form action="/answer/{{answer.id}}/delete" method="post">
                         <button type="submit" name="delete_answer">Delete answer</button>
@@ -72,9 +74,9 @@
                     <input type="button" value="Edit answer" onclick="window.location.href='/question/{{ question.id }}/{{ answer.id }}/edit#message'"/>
                 </form>
             </div>
-            <p>Submission time: {{ answer.submission_time.strftime("%Y-%m-%d %H:%M") }} Votes: {{ answer.vote_number }}</p>
+            <p id="{{ answer.id }}">Submission time: {{ answer.submission_time.strftime("%Y-%m-%d %H:%M") }} Votes: {{ answer.vote_number }}</p>
             <hr>
-            <p id="{{ answer.id }}" class="message">{{ answer.message.replace('<br>', '\n') }}</p>
+            <p class="message">{{ answer.message.replace('<br>', '\n') }}</p>
         {% if answer.image %}
             <p><img class="uploaded" src="/static/images/{{ answer.image }}"></p>
         {% endif %}
