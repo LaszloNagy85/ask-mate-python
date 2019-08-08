@@ -265,7 +265,7 @@ def route_new_question_comment(question_id):
 
     data_manager.add_data(new_comment.keys(), list(new_comment.values()), 'comment')
 
-    return redirect('/question/<question_id>')
+    return redirect(f'/question/{question_id}')
 
 
 @app.route('/answer/<answer_id>/new_answer', methods=['POST'])
