@@ -71,3 +71,8 @@ button[type=submit], input[type=file], input[type=button] {
     color: white;
     margin: 0 5px
 }
+
+.comments {
+    padding: 0 0 0 20px;
+    background-color: lightgray;
+}
