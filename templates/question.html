@@ -35,20 +35,21 @@
                     {% if question.id == comment.question_id %}
                         <div class="inline">
                             <form action="/comments/{{ comment.id }}/delete" method="post">
-                                <button type="submit" name="delete">X</button>
+                                <button type="submit" name="delete">Delete comment</button>
                             </form>
                             <form>
                                 <input type="button" value="Edit comment" onclick="window.location.href='/comments/{{ comment.id }}/edit'"/>
                             </form>
                         </div>
-                        <p id="c.{{ comment.id }}" class="comment">{{comment.message}}</p>
+                        <p class="comment_header">{{ comment.submission_time }}{% if comment.edited_count %} (edited {{ comment.edited_count }} times){% endif %}</p>
+                        <p id="comment-{{ comment.id }}" class="comment">{{comment.message}}</p>
                     {% endif %}
                 {% endfor %}
             <div>
                 <form action="{{ comment_question_action }}" method="post" enctype="multipart/form-data">
                 <p>
                     <label for="message">{{ comment_legend }}</label><br>
-                    <textarea id="message" name="message" required cols="50" rows="5">{{ stored_comment }}</textarea>
+                    <textarea id="question-comment" name="message" required cols="50" rows="5">{{ stored_comment }}</textarea>
                 </p>
                 <button type="submit">{{ comment_button }}</button>
 
@@ -64,7 +65,7 @@
                 <a href="/vote/{{ question.id }}/down/{{ answer.id }}"><img src="/static/icons/arrow_down.png" width="20" height="20"></a>
                 <div class="delete-button">
                     <form action="/answer/{{answer.id}}/delete" method="post">
-                        <button type="submit" name="delete_answer">Delete Answer</button>
+                        <button type="submit" name="delete_answer">Delete answer</button>
                     </form>
                 </div>
                 <form>
@@ -83,21 +84,23 @@
                 {% for comment in comments %}
                     {% if comment.answer_id == answer.id %}
                         <div class="inline">
-                            <form action="/comments/{{ comment_id }}/delete" method="post">
-                                <button type="submit" name="delete">X</button>
+                            <form action="/comments/{{ comment.id }}/delete" method="post">
+                                <button type="submit" name="delete">Delete comment</button>
                             </form>
                             <form>
                                 <input type="button" value="Edit comment" onclick="window.location.href='/comments/{{ comment.id }}/edit'"/>
+                                <input type="button" value="Edit comment" onclick="window.location.href='/comments/{{ comment.id }}/edit/{{ comment.edit_count }}'"/>
                             </form>
                         </div>
-                        <p id="c.{{ comment.id }}" class="comment">{{ comment.message }}</p>
+                        <p class="comment_header">{{ comment.submission_time }}{% if comment.edited_count %} (edited {{ comment.edited_count }} times){% endif %}</p>
+                        <p id="comment-{{ comment.id }}" class="comment">{{comment.message}}</p>
                     {% endif %}
                 {% endfor %}
                 <div>
-                    <form action="{{ comment_answer_action }}" method="post" enctype="multipart/form-data">
+                    <form action="/answer/{{answer.id}}/new_comment" method="post" enctype="multipart/form-data">
                     <p>
                         <label for="message">{{ comment_legend }}</label><br>
-                        <textarea id="message" name="message" required cols="50" rows="5">{{ stored_comment }}</textarea>
+                        <textarea id="" name="message" required cols="50" rows="5">{{ stored_comment }}</textarea>
                     </p>
                     <button type="submit">{{ comment_button }}</button>
 
