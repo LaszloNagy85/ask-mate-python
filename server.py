@@ -297,7 +297,7 @@ def route_delete_comment(comment_id):
     return redirect(f'/question/{question_id}')
 
 
-@app.route('/comments/<comment_id>/edit', methods=['POST', 'GET'])
+@app.route('/comments/<comment_id>/edit/', methods=['POST', 'GET'])
 def route_edit_comment(comment_id):
     ids = data_manager.get_columns_by_attribute(['question_id', 'answer_id'], 'comment', 'id', comment_id)
     if ids['question_id'] is not None:
