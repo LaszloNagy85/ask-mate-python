@@ -297,6 +297,41 @@ def route_delete_comment(comment_id):
     return redirect(f'/question/{question_id}')
 
 
+@app.route('/comments/<comment_id>/edit', methods=['POST', 'GET'])
+def route_edit_comment(comment_id):
+    ids = data_manager.get_columns_by_attribute(['question_id', 'answer_id'], 'comment', 'id', comment_id)
+    if ids['question_id'] is not None:
+        question_id = str(ids['question_id'])
+    else:
+        question_id = data_manager.get_columns_by_attribute(['question_id'], 'answer', 'id', str(ids['answer_id']))['question_id']
+
+    if request.method == 'POST':
+        edited_count = data_manager.get_columns_by_attribute(['edited_count'], 'comment', 'id', comment_id)['edited_count']
+        if edited_count is None:
+            edited_count = 0
+        comment = {
+            'message': request.form.get('message'),
+            'submission_time': util.get_timestamp(),
+            'edited_count': edited_count + 1
+        }
+        data_manager.update_data(['message', 'submission_time', 'edited_count'],
+                                 [comment['message'], comment['submission_time'], comment['edited_count']],
+                                 'comment', comment_id)
+        return redirect(f'/question/{question_id}#{comment_id}')
+
+    question = data_manager.get_columns_by_attribute(QUESTION, 'question', 'id', str(question_id))
+    answers = data_manager.get_columns_by_attribute(ANSWER, 'answer', 'question_id', str(question_id))
+    comment = data_manager.get_columns_by_attribute(['message'], 'comment', 'id', comment_id)
+
+    return render_template('question.html',
+                           question=question,
+                           answers=answers,
+                           page_title='Edit comment',
+                           button_title='Update comment',
+                           stored_answer=comment['message'],
+                           legend='Edit comment')
+
+
 if __name__ == '__main__':
     app.run(
         port=8000,
