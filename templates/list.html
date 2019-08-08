@@ -25,7 +25,7 @@
         </select>
         <button type="submit">Sort it!</button>
             <div class="inline">
-                <input type="button" value="Show all questions" onclick="window.location.href='/list'"/>
+                <input type="button" value="{{ button_text }}" onclick="window.location.href='{{ button_action }}'"/>
             </div>
     </form>
     <hr>
@@ -36,7 +36,7 @@
             </p>
                 <details>
 
-                <summary>Show Answers</summary>
+                    <summary>Show Answers</summary>
 
                     {% for answer in answers %}
                         {% if question.id == answer.question_id %}

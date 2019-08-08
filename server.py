@@ -81,7 +81,9 @@ def route_list_of_questions():
                            reverse_options=['asc', 'desc'],
                            order_by=ORDER,
                            order=DIRECTION,
-                           form_action='/')
+                           form_action='/',
+                           button_action='/list',
+                           button_text='Show all')
 
 
 @app.route('/add-question', methods=['GET', 'POST'])
@@ -205,7 +207,9 @@ def all_questions():
                            reverse_options=['asc', 'desc'],
                            order_by=ORDER,
                            order=DIRECTION,
-                           form_action='/list')
+                           form_action='/list',
+                           button_action='/',
+                           button_text='Show less')
 
 
 @app.route('/question/<question_id>/<answer_id>/edit', methods=['GET', 'POST'])

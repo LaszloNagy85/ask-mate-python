@@ -30,6 +30,26 @@
             <p><img class="uploaded" src="/static/images/{{ question.image }}"></p>
         {% endif %}
     </div>
+    <div class="comments">
+        <details>
+            <summary>Show comments</summary>
+                {% for comment in comments %}
+                    {% if question.id == comment.question_id and comment.answer_id == NULL%}
+                        <p id="c.{{ comment.id }}" class="comment">{{comment.message}}</p>
+                    {% endif %}
+                {% endfor %}
+            <div>
+                <form action="{{ form_url }}" method="post" enctype="multipart/form-data">
+                <p>
+                    <label for="message">{{ comment_legend }}</label><br>
+                    <textarea id="message" name="message" required cols="50" rows="5">{{ stored_comment }}</textarea>
+                </p>
+                <button type="submit">{{ comment_button }}</button>
+
+                </form>
+            </div>
+        </details>
+    </div>
     <div>
         {% for answer in answers %}
             <br><hr>
@@ -51,6 +71,26 @@
         {% if answer.image %}
             <p><img class="uploaded" src="/static/images/{{ answer.image }}"></p>
         {% endif %}
+        <div class="comments">
+            <details>
+                <summary>Show comments</summary>
+                {% for comment in comments %}
+                    {% if comment.answer_id == answer.id %}
+                        <p id="c.{{ comment.id }}" class="comment">{{comment.message}}</p>
+                    {% endif %}
+                {% endfor %}
+                <div>
+                    <form action="{{ form_url }}" method="post" enctype="multipart/form-data">
+                    <p>
+                        <label for="message">{{ comment_legend }}</label><br>
+                        <textarea id="message" name="message" required cols="50" rows="5">{{ stored_comment }}</textarea>
+                    </p>
+                    <button type="submit">{{ comment_button }}</button>
+
+                    </form>
+                </div>
+            </details>
+        </div>
         {% endfor %}
     </div>
 
