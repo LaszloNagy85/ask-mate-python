@@ -5,6 +5,12 @@
 {% endblock %}
 
 {% block content %}
+    <div class="inline">
+        <form action="/search" method="get">
+            <input type="text" name="q" placeholder="Search..." minlength="3">
+            <button type="submit">Search</button>
+        </form>
+    </div>
     <h2>Questions</h2>
     <input type="button" value="Ask a question" onclick="window.location.href='/add-question'"/>
     <br><br>
@@ -25,7 +31,9 @@
         </select>
         <button type="submit">Sort it!</button>
         <div class="inline">
-            <input type="button" value="{{ button_text }}" onclick="window.location.href='{{ button_action }}'"/>
+            <div id="adjust">
+                <input id="fix-size" type="button" value="{{ button_text }}" onclick="window.location.href='{{ button_action }}'"/>
+            </div>
         </div>
     </form>
     <hr>
