@@ -332,6 +332,26 @@ def route_edit_comment(comment_id):
                            legend='Edit comment')
 
 
+@app.route('/search')
+def search():
+    search_input = request.args.get('q')
+    questions = data_manager.search_question(search_input)
+    answers = data_manager.search_answer(search_input)
+    answers = data_manager.highlight(answers, search_input)
+    questions = data_manager.highlight(questions, search_input)
+    last_question = len(questions) - 1
+    last_answer = len(answers) - 1
+
+    return render_template('search.html',
+                           page_title='Search results',
+                           questions=questions,
+                           answers=answers,
+                           last_question=last_question,
+                           last_answer=last_answer,
+                           search=search_input
+                           )
+
+
 if __name__ == '__main__':
     app.run(
         port=8000,
