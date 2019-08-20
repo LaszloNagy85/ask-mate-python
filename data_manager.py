@@ -1,6 +1,5 @@
 import database_connection
 from psycopg2 import sql
-import re
 
 
 @database_connection.connection_handler
@@ -70,17 +69,31 @@ def search_answer(cursor, search_input):
 
 def highlight(data, search_input):
     for row in data:
-        original_string = re.search(search_input, row['message'], flags=re.IGNORECASE)
-        if original_string:
-            message_highlight = re.sub(search_input, f'<span class="highlight">{original_string.group(0)}</span>', row['message'],
-                            flags=re.IGNORECASE)
-            row['message'] = message_highlight
+        startspan = '<span class="highlight">'
+        endspan = '</span>'
+        message = row['message']
+        index = 0
 
-        title_string = re.search(search_input, row['title'], flags=re.IGNORECASE)
-        if title_string:
-            title_highlight = re.sub(search_input, f'<span class="highlight">{title_string.group(0)}</span>', row['title'],
-                            flags=re.IGNORECASE)
-            row['title'] = title_highlight
+        while index < len(message):
+            index = message.lower().find(search_input.lower(), index)
+            if index == -1:
+                break
+            message = message[:index] + startspan + message[index: index + len(search_input)] \
+                + endspan + message[index + len(search_input):]
+            index += (len(startspan) + len(search_input) + len(endspan))
+        row['message'] = message
+
+        title = row['title']
+        index = 0
+
+        while index < len(title):
+            index = title.lower().find(search_input.lower(), index)
+            if index == -1:
+                break
+            title = title[:index] + startspan + title[index: index + len(search_input)] \
+                + endspan + title[index + len(search_input):]
+            index += (len(startspan) + len(search_input) + len(endspan))
+        row['title'] = title
     return data
 
 
