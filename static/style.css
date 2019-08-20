@@ -7,8 +7,10 @@ h1 {
     color: darkslategray;
     text-decoration: underline;
 }
-h2 {
+h2, h3 {
     color: #276965;
+}
+h3 {padding: 10px 0
 }
 a#ask {
     color: #176942;
@@ -53,6 +55,7 @@ img.uploaded {
     }
 textarea {
     width: auto;
+    resize: none;
 }
 
 .inline {
@@ -85,4 +88,17 @@ button[type=submit]:hover, input[type=file]:hover, input[type=button]:hover {
 
 .vote-icon {
     padding: 4px;
+}
+
+.highlight {background-color: lightseagreen;
+    color: #fff;
+    padding: 3px
+}
+
+.heading {width: 100%;
+    background-color: #eeeeee;
+}
+
+#fix-size {width: 90px;
+    height: 28px;
 }
