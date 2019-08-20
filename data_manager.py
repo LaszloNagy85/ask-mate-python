@@ -31,6 +31,50 @@ def get_columns_by_attribute(cursor, col_list, table, col_name, col_value):
 
 
 @database_connection.connection_handler
+def search_question(cursor, search_input):
+    query_for_func = sql.SQL("""SELECT
+                                id,
+                                submission_time,
+                                vote_number,
+                                view_number,
+                                title,
+                                message
+                                FROM question
+                                WHERE message LIKE {search} OR
+                                title LIKE {search}
+                                ORDER BY submission_time DESC""").format(search=sql.SQL(f"'%{search_input}%'"))
+    cursor.execute(query_for_func)
+    data = cursor.fetchall()
+    return data
+
+
+@database_connection.connection_handler
+def search_answer(cursor, search_input):
+    query_for_func = sql.SQL("""SELECT
+                                answer.id,
+                                answer.submission_time,
+                                answer.vote_number,
+                                answer.question_id,
+                                answer.message,
+                                question.title
+                                FROM answer
+                                INNER JOIN question
+                                    ON answer.question_id = question.id
+                                WHERE answer.message LIKE {}
+                                ORDER BY answer.submission_time DESC""").format(sql.SQL(f"'%{search_input}%'"))
+    cursor.execute(query_for_func)
+    data = cursor.fetchall()
+    return data
+
+
+def highlight(data, search_input):
+    for row in data:
+        row['message'] = row['message'].replace(search_input, f'<span class="highlight">{search_input}</span>')
+        row['title'] = row['title'].replace(search_input, f'<span class="highlight">{search_input}</span>')
+    return data
+
+
+@database_connection.connection_handler
 def delete_answer_db(cursor, answer_id):
     cursor.execute("""
                     DELETE FROM answer
