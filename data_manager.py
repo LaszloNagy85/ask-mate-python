@@ -1,5 +1,6 @@
 import database_connection
 from psycopg2 import sql
+import re
 
 
 @database_connection.connection_handler
@@ -40,8 +41,8 @@ def search_question(cursor, search_input):
                                 title,
                                 message
                                 FROM question
-                                WHERE message LIKE {search} OR
-                                title LIKE {search}
+                                WHERE LOWER(message) LIKE LOWER({search}) OR
+                                LOWER(title) LIKE LOWER({search})
                                 ORDER BY submission_time DESC""").format(search=sql.SQL(f"'%{search_input}%'"))
     cursor.execute(query_for_func)
     data = cursor.fetchall()
@@ -60,7 +61,7 @@ def search_answer(cursor, search_input):
                                 FROM answer
                                 INNER JOIN question
                                     ON answer.question_id = question.id
-                                WHERE answer.message LIKE {}
+                                WHERE LOWER(answer.message) LIKE LOWER({})
                                 ORDER BY answer.submission_time DESC""").format(sql.SQL(f"'%{search_input}%'"))
     cursor.execute(query_for_func)
     data = cursor.fetchall()
@@ -69,8 +70,17 @@ def search_answer(cursor, search_input):
 
 def highlight(data, search_input):
     for row in data:
-        row['message'] = row['message'].replace(search_input, f'<span class="highlight">{search_input}</span>')
-        row['title'] = row['title'].replace(search_input, f'<span class="highlight">{search_input}</span>')
+        original_string = re.search(search_input, row['message'], flags=re.IGNORECASE)
+        if original_string:
+            message_highlight = re.sub(search_input, f'<span class="highlight">{original_string.group(0)}</span>', row['message'],
+                            flags=re.IGNORECASE)
+            row['message'] = message_highlight
+
+        title_string = re.search(search_input, row['title'], flags=re.IGNORECASE)
+        if title_string:
+            title_highlight = re.sub(search_input, f'<span class="highlight">{title_string.group(0)}</span>', row['title'],
+                            flags=re.IGNORECASE)
+            row['title'] = title_highlight
     return data
 
 
