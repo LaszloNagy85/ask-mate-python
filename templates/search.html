@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+
+    {% if not questions and not answers %}
+        <h2>No results for "{{ search }}"</h2>
+    {% else %}
+        <h2>Search results for "{{ search }}"</h2>
+    {% endif %}
+
+    {% if questions %}
+        <div class="heading">
+            <h3>Questions</h3>
+        </div>
+
+        {% for question in questions %}
+            <a class="question" href="/question/counted/{{ question.id }}">{{ question.title | safe}}</a>
+            <p>{{ question.submission_time.strftime("%Y-%m-%d %H:%M") }} Votes: {{ question.vote_number }} Views: {{ question.view_number }}</p>
+            <p class="answer">{{  question.message | safe }}</p>
+
+            {% if questions.index(question) != last_question %}
+                <hr>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    {% if answers %}
+        <div class="heading">
+            <h3>Answers</h3>
+        </div>
+
+        {% for answer in answers %}
+            <a class="question" href="/question/{{ answer.question_id }}/#{{ answer.id }}">{{ answer.title | safe}}</a>
+            <p>{{ answer.submission_time.strftime("%Y-%m-%d %H:%M") }} Votes: {{ answer.vote_number }}</p>
+            <p class="answer">{{  answer.message | safe }}</p>
+
+            {% if answers.index(answer) != last_answer %}
+                <hr>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+{% endblock %}
