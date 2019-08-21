@@ -16,6 +16,18 @@ ALTER TABLE IF EXISTS ONLY public.question_tag DROP CONSTRAINT IF EXISTS fk_ques
 ALTER TABLE IF EXISTS ONLY public.tag DROP CONSTRAINT IF EXISTS pk_tag_id CASCADE;
 ALTER TABLE IF EXISTS ONLY public.question_tag DROP CONSTRAINT IF EXISTS fk_tag_id CASCADE;
 
+ALTER TABLE IF EXISTS ONLY public.user_question DROP CONSTRAINT IF EXISTS pk_user_info_id CASCADE;
+ALTER TABLE IF EXISTS ONLY public.user_question DROP CONSTRAINT IF EXISTS fk_question_id CASCADE;
+ALTER TABLE IF EXISTS ONLY public.user_answer DROP CONSTRAINT IF EXISTS pk_user_info_id CASCADE;
+ALTER TABLE IF EXISTS ONLY public.user_answer DROP CONSTRAINT IF EXISTS fk_answer_id_id CASCADE;
+ALTER TABLE IF EXISTS ONLY public.user_comment DROP CONSTRAINT IF EXISTS pk_user_info_id CASCADE;
+ALTER TABLE IF EXISTS ONLY public.user_comment DROP CONSTRAINT IF EXISTS fk_comment_id_id CASCADE;
+ALTER TABLE IF EXISTS ONLY public.user_info DROP CONSTRAINT IF EXISTS pk_user_info_id CASCADE;
+ALTER TABLE IF EXISTS ONLY public.user_question DROP CONSTRAINT IF EXISTS fk_user_info_id CASCADE;
+ALTER TABLE IF EXISTS ONLY public.user_answer DROP CONSTRAINT IF EXISTS fk_user_info_id CASCADE;
+ALTER TABLE IF EXISTS ONLY public.user_comment DROP CONSTRAINT IF EXISTS fk_user_info_id CASCADE;
+
+
 DROP TABLE IF EXISTS public.question;
 DROP SEQUENCE IF EXISTS public.question_id_seq;
 CREATE TABLE question (
@@ -58,6 +70,23 @@ CREATE TABLE user_info (
     registration_time timestamp without time zone
 );
 
+DROP TABLE IF EXISTS public.user_question;
+CREATE TABLE user_question (
+    question_id integer NOT NULL,
+    user_id integer NOT NULL
+);
+
+DROP TABLE IF EXISTS public.user_answer;
+CREATE TABLE user_answer (
+    answer_id integer NOT NULL,
+    user_id integer NOT NULL
+);
+
+DROP TABLE IF EXISTS public.user_comment;
+CREATE TABLE user_comment (
+    comment_id integer NOT NULL,
+    user_id integer NOT NULL
+);
 
 DROP TABLE IF EXISTS public.question_tag;
 CREATE TABLE question_tag (
@@ -88,6 +117,18 @@ ALTER TABLE ONLY question_tag
 ALTER TABLE ONLY tag
     ADD CONSTRAINT pk_tag_id PRIMARY KEY (id);
 
+ALTER TABLE ONLY user_info
+    ADD CONSTRAINT pk_user_info_id PRIMARY KEY (id);
+
+ALTER TABLE ONLY user_question
+    ADD CONSTRAINT pk_user_question_id PRIMARY KEY (question_id, user_id);
+
+ALTER TABLE ONLY user_answer
+    ADD CONSTRAINT pk_user_answer_id PRIMARY KEY (answer_id, user_id);
+
+ALTER TABLE ONLY user_comment
+    ADD CONSTRAINT pk_user_comment_id PRIMARY KEY (comment_id, user_id);
+
 ALTER TABLE ONLY comment
     ADD CONSTRAINT fk_answer_id FOREIGN KEY (answer_id) REFERENCES answer(id) ON DELETE CASCADE;
 
@@ -100,8 +141,27 @@ ALTER TABLE ONLY question_tag
 ALTER TABLE ONLY comment
     ADD CONSTRAINT fk_question_id FOREIGN KEY (question_id) REFERENCES question(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY user_question
+    ADD CONSTRAINT fk_question_id FOREIGN KEY (question_id) REFERENCES question(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY user_answer
+    ADD CONSTRAINT fk_answer_id FOREIGN KEY (answer_id) REFERENCES answer(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY user_comment
+    ADD CONSTRAINT fk_comment_id FOREIGN KEY (comment_id) REFERENCES comment(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY question_tag
     ADD CONSTRAINT fk_tag_id FOREIGN KEY (tag_id) REFERENCES tag(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY user_question
+    ADD CONSTRAINT fk_user_info_id FOREIGN KEY (user_id) REFERENCES user_info(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY user_answer
+    ADD CONSTRAINT fk_user_info_id FOREIGN KEY (user_id) REFERENCES user_info(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY user_comment
+    ADD CONSTRAINT fk_user_info_id FOREIGN KEY (user_id) REFERENCES user_info(id) ON DELETE CASCADE;
+
 
 INSERT INTO question VALUES (0, '2017-04-28 08:29:00', 29, 7, 'How to make lists in Python?', 'I am totally new to this, any hints?', NULL);
 INSERT INTO question VALUES (1, '2017-04-29 09:19:00', 15, 9, 'Wordpress loading multiple jQuery Versions', 'I developed a plugin that uses the jquery booklet plugin (http://builtbywill.com/booklet/#/) this plugin binds a function to $ so I cann call $(".myBook").booklet();
@@ -264,3 +324,11 @@ SELECT pg_catalog.setval('tag_id_seq', 3, true);
 INSERT INTO question_tag VALUES (0, 1);
 INSERT INTO question_tag VALUES (1, 3);
 INSERT INTO question_tag VALUES (2, 3);
+
+INSERT INTO user_info VALUES (1, 'foxi', '2019-08-20 12:00:04');
+INSERT INTO user_info VALUES (2, 'tengely', '2019-08-20 12:00:04');
+SELECT pg_catalog.setval('user_info_id_seq', 3, true);
+
+INSERT INTO user_question VALUES (1, 1);
+INSERT INTO user_answer VALUES (4, 2);
+INSERT INTO user_comment VALUES (2, 1);
