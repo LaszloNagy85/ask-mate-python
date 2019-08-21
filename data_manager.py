@@ -251,3 +251,22 @@ def hash_password(plain_text_password):
 def verify_password(plain_text_password, hashed_password):
     hashed_bytes_password = hashed_password.encode('utf-8')
     return bcrypt.checkpw(plain_text_password.encode('utf-8'), hashed_bytes_password)
+
+
+@database_connection.connection_handler
+def get_data_from_user_db(cursor, col_list, table, col_name, col_value):
+    query_for_func = sql.SQL('SELECT {} FROM {} WHERE {} = {}').format(
+        sql.SQL(', ').join(map(sql.Identifier, col_list)),
+        sql.Identifier(table),
+        sql.Identifier(col_name),
+        sql.SQL(col_value))
+    cursor.execute(query_for_func)
+
+    if col_name == 'id':
+        data = cursor.fetchone()
+    elif col_name == 'name':
+        data = cursor.fetchone()
+    else:
+        data = cursor.fetchall()
+
+    return data
