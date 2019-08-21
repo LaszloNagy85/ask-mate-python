@@ -358,8 +358,6 @@ def search():
 
 @app.route('/registration', methods=['POST', 'GET'])
 def route_user_registration():
-    print(request.form.get('username'))
-
     if request.method == 'POST':
 
         user = data_manager.get_filtered_data(['name'], 'user_info', 'name', [request.form.get('username')])
@@ -393,29 +391,29 @@ def route_user_login():
         user_name = request.form.get('username')
         password = request.form.get('password')
         get_password = data_manager.get_filtered_data(['password'], 'user_info', 'name', [user_name])
-        print(get_password)
         if get_password is not None:
             hashed_password = get_password['password']
             is_matching = data_manager.verify_password(password, hashed_password)
             if is_matching:
                 return redirect('/')
-            else:
-                return render_template('login-registration.html',
-                                       is_matching=is_matching,
-                                       button_text='Login',
-                                       page_title='Login',
-                                       invalid_username=False)
-        else:
-            return render_template('login-registration.html',
-                                   is_matching=False,
-                                   button_text='Login',
-                                   page_title='Login',
-                                   invalid_username=False)
+
+        return render_template('login-registration.html',
+                               is_matching=False,
+                               button_text='Login',
+                               page_title='Login',
+                               invalid_username=False)
+
     return render_template('login-registration.html',
                            button_text='Login',
                            page_title='Login',
                            is_matching=True)
 
+
+"""@app.route('/user/<user_id>')
+def user(user_id):
+    questions =
+    return render_template('user.html',
+                           page_title='User information')"""
 
 if __name__ == '__main__':
     app.run(
