@@ -1,11 +1,17 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 
 import data_manager
 import util
 import os
 
+
+def logged_in():
+    return 'username' in session
+
+
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = "static/images"
+app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 
 QUESTION = ['id', 'submission_time', 'view_number', 'vote_number', 'title', 'message', 'image']
@@ -359,13 +365,29 @@ def route_user_registration():
         password = request.form.get('password')
         hashed_password = data_manager.hash_password(password)
         reg_date = util.get_timestamp()
-        data_manager.add_data(['name', 'password', 'registration_date'], [user_name, hashed_password, reg_date], 'user_info')
+        data_manager.add_data(['name', 'password', 'registration_date'],
+                              [user_name, hashed_password, reg_date],
+                              'user_info')
 
         return redirect('/')
     return render_template('login-registration.html',
                            action=url_for('route_user_registration'),
                            buton_text='Registration',
                            page_title='Registration')
+
+
+@app.route('/login', methods=['POST', 'GET'])
+def route_user_login():
+    if request.method == 'POST':
+        session['username'] = request.form.get('username')
+        user_name = request.form.get('username')
+        password = request.form.get('password')
+        hashed_password = data_manager.get_data_from_user_db(['password'], 'user_info', 'name', user_name)
+        is_matching = data_manager.verify_password(password, hashed_password)
+        if is_matching:
+            return redirect('/')
+        else:
+            return render_template('login-registration.html')
 
 
 if __name__ == '__main__':
