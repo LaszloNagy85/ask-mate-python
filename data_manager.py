@@ -35,12 +35,12 @@ def get_columns_by_attribute(cursor, col_list, table, col_name, col_value):
 # copy of get_columns_by_attribute without order
 @database_connection.connection_handler
 def get_filtered_data(cursor, col_list, table, col_name, col_value):
-    query_for_func = sql.SQL('SELECT {} FROM {} WHERE {} = {}').format(
+    query_for_func = sql.SQL("SELECT {} FROM {} WHERE {} = {}").format(
         sql.SQL(', ').join(map(sql.Identifier, col_list)),
         sql.Identifier(table),
         sql.Identifier(col_name),
-        sql.SQL(col_value))
-    cursor.execute(query_for_func)
+        sql.SQL(', ').join(sql.Placeholder() * len(col_value)))
+    cursor.execute(query_for_func, col_value)
 
     if col_name == 'id':
         data = cursor.fetchone()
@@ -118,15 +118,6 @@ def highlight(data, search_input):
 
 
 @database_connection.connection_handler
-def delete_answer_db(cursor, answer_id):
-    cursor.execute("""
-                    DELETE FROM answer
-                    WHERE id = %(answer)s;
-                    """,
-                   {'answer': answer_id})
-
-
-@database_connection.connection_handler
 def get_data_by_attributes(cursor, list_of_types, table):
     query_for_func = sql.SQL('SELECT {} FROM {}').format(
                      sql.SQL(', ').join(map(sql.Identifier, list_of_types)),
@@ -135,16 +126,6 @@ def get_data_by_attributes(cursor, list_of_types, table):
     data_by_attributes = cursor.fetchall()
 
     return data_by_attributes
-
-
-@database_connection.connection_handler
-def delete_question_db(cursor, question_id):
-
-    cursor.execute("""
-                    DELETE FROM question
-                    WHERE id = %(question_id)s;
-                    """,
-                   {'question_id': question_id})
 
 
 @database_connection.connection_handler
@@ -242,16 +223,6 @@ def delete_image(image_filenames, image_path):
     for filename in image_filenames:
         if filename:
             database_connection.remove_image(filename, image_path)
-
-
-@database_connection.connection_handler
-def delete_comment_db(cursor, comment_id):
-
-    cursor.execute("""
-                    DELETE FROM comment
-                    WHERE id = %(comment_id)s;
-                    """,
-                   {'question_id': comment_id})
 
 
 @database_connection.connection_handler
