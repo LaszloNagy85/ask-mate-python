@@ -326,7 +326,7 @@ INSERT INTO question_tag VALUES (0, 1);
 INSERT INTO question_tag VALUES (1, 3);
 INSERT INTO question_tag VALUES (2, 3);
 
-INSERT INTO user_info VALUES (1, 'foxi', '$2b$12$xlT5IBsKlsANSQFxGV2FuumUYnZYe8QrKyZ2pqOH2VrrXO6kf1IxO','2019-08-20 12:00:04');
+INSERT INTO user_info VALUES (1, 'foxi88', '$2b$12$xlT5IBsKlsANSQFxGV2FuumUYnZYe8QrKyZ2pqOH2VrrXO6kf1IxO','2019-08-20 12:00:04');
 INSERT INTO user_info VALUES (2, 'tengely', '$2b$12$Vluf1Z165ANermX2aI8nHuipQ5qKozYQr1A.3lC.GA3PZV5nm6vz6','2019-08-20 12:00:04');
 SELECT pg_catalog.setval('user_info_id_seq', 2, true);
 
