@@ -14,7 +14,7 @@ def get_all_data(cursor, table):
 
 
 # if the col_value is a string, use "'col_value'
-# use it only on question, answer, comment tables!
+# use it only on question, answer tables!
 @database_connection.connection_handler
 def get_columns_by_attribute(cursor, col_list, table, col_name, col_value):
     query_for_func = sql.SQL('SELECT {} FROM {} WHERE {} = {} ORDER BY submission_time').format(
@@ -261,4 +261,68 @@ def get_data_from_user_db(cursor, col_list, table, col_name, col_value):
     else:
         data = cursor.fetchall()
 
+    return data
+
+
+@database_connection.connection_handler
+def get_username_by_id(cursor, user_id):
+    query_for_func = sql.SQL("""SELECT name FROM user_info
+                                WHERE id = {}""").format(sql.SQL(user_id))
+    cursor.execute(query_for_func)
+    data = cursor.fetchone()
+
+    return data
+
+
+@database_connection.connection_handler
+def get_questions_by_user_id(cursor, user_id):
+    query_for_func = sql.SQL("""SELECT question.id, question.title FROM user_question 
+                                INNER JOIN question ON 
+                                user_question.question_id = question.id
+                                WHERE user_question.user_id = {}""").format(sql.SQL(user_id))
+    cursor.execute(query_for_func)
+    data = cursor.fetchall()
+
+    return data
+
+
+@database_connection.connection_handler
+def get_answers_by_user_id(cursor, user_id):
+    query_for_func = sql.SQL("""SELECT answer.id, answer.question_id, answer.message, question.title FROM user_answer 
+                                INNER JOIN answer ON 
+                                user_answer.answer_id = answer.id
+                                INNER JOIN question ON
+                                answer.question_id = question.id
+                                WHERE user_answer.user_id = {}""").format(sql.SQL(user_id))
+    cursor.execute(query_for_func)
+    data = cursor.fetchall()
+
+    return data
+
+
+@database_connection.connection_handler
+def get_comments_by_user_id(cursor, user_id):
+    query_for_func = sql.SQL("""SELECT c.id, coalesce(c.question_id,a.question_id) AS question_id,
+                                c.message, coalesce(q.title,q2.title) AS title FROM user_comment uc
+                                INNER JOIN comment c ON 
+                                uc.comment_id = c.id
+                                LEFT JOIN question q ON
+                                c.question_id = q.id
+                                LEFT JOIN answer a ON
+                                c.answer_id = a.id
+                                LEFT JOIN question q2 ON
+                                q2.id = a.question_id
+                                WHERE uc.user_id = {}""").format(sql.SQL(user_id))
+    cursor.execute(query_for_func)
+    data = cursor.fetchall()
+
+    return data
+
+
+def trim_message(data):
+    for row in data:
+        if len(row['message']) > 100:
+            row['message'] = row['message'][:97] + '...'
+        else:
+            pass
     return data
