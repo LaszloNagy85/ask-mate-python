@@ -166,7 +166,6 @@ def route_delete_question(question_id):
         question = data_manager.get_columns_by_attribute(['image'], 'question', 'id', question_id)
         answers = data_manager.get_columns_by_attribute(['image'], 'answer', 'question_id', question_id)
 
-        # data_manager.delete_question_db(question_id)
         data_manager.delete_from_db(question_id, 'question')
 
         image_filenames = [question['image']] + [answer['image'] for answer in answers]
@@ -181,7 +180,6 @@ def route_delete_answer(answer_id):
         data_of_answer = data_manager.get_columns_by_attribute(['question_id', 'image'], 'answer', 'id', answer_id)
         question_id = data_of_answer['question_id']
 
-        # data_manager.delete_answer_db(answer_id)
         data_manager.delete_from_db(answer_id, 'answer')
 
         if data_of_answer['image']:
