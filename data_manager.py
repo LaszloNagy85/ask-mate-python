@@ -44,6 +44,8 @@ def get_filtered_data(cursor, col_list, table, col_name, col_value):
 
     if col_name == 'id':
         data = cursor.fetchone()
+    elif col_name == 'name':
+        data = cursor.fetchone()
     else:
         data = cursor.fetchall()
 
