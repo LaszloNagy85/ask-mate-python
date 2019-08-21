@@ -354,9 +354,11 @@ def search():
 
 @app.route('/registration', methods=['POST', 'GET'])
 def route_user_registration():
+    print(request.form.get('username'))
 
     if request.method == 'POST':
-        user = data_manager.get_filtered_data(['name'], 'user_info', 'name', request.form.get('username'))
+
+        user = data_manager.get_filtered_data(['name'], 'user_info', 'name', [request.form.get('username')])
         if not user:
             user_name = request.form.get('username')
             password = request.form.get('password')
