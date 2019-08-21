@@ -352,6 +352,22 @@ def search():
                            )
 
 
+@app.route('/registration', methods=['POST', 'GET'])
+def route_user_registration():
+    if request.method == 'POST':
+        user_name = request.form.get('user_name')
+        password = request.form.get('password')
+        hashed_password = data_manager.hash_password(password)
+        reg_date = util.get_timestamp()
+        data_manager.add_data(['name', 'password', 'registration_date'], [user_name, hashed_password, reg_date], 'user_info')
+
+        return redirect('/')
+    return render_template('login-registration.html',
+                           action=url_for('route_user_registration'),
+                           buton_text='Registration',
+                           page_title='Registration')
+
+
 if __name__ == '__main__':
     app.run(
         port=8000,
