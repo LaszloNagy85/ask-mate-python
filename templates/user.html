@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+
+    {% if not questions and not answers and not comments%}
+        <h2>No activities to show</h2>
+    {% else %}
+        <h2>{{ user }}'s activity</h2>
+    {% endif %}
+
+    {% if questions %}
+        <div class="heading">
+            <h3>Questions</h3>
+        </div>
+
+        {% for question in questions %}
+            <a class="question" href="/question/counted/{{ question.id }}">{{ question.title }}</a>
+
+            {% if questions.index(question) != last_question %}
+                <hr>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    {% if answers %}
+        <div class="heading">
+            <h3>Answers</h3>
+        </div>
+
+        {% for answer in answers %}
+            <a class="question" href="/question/{{ answer.question_id }}/#{{ answer.id }}">{{ answer.title }}</a>
+            <p class="answer">{{  answer.message }}</p>
+
+            {% if answers.index(answer) != last_answer %}
+                <hr>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    {% if comments %}
+        <div class="heading">
+            <h3>Comments</h3>
+        </div>
+
+        {% for comment in comments %}
+            <a class="question" href="/question/{{ comment.question_id }}/#comment-{{ comment.id }}">{{ comment.title }}</a>
+            <p class="answer">{{  comment.message }}</p>
+
+            {% if comments.index(comment) != last_comment %}
+                <hr>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+{% endblock %}
