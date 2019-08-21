@@ -8,7 +8,8 @@
 
 <body>
     {%  if page_title != 'Login' and page_title != 'Registration' %}
-        <div class="inline">
+        <div class="header">
+            <input type="button" value="Show users" id="users" onclick="window.location.href='/list-users/'"/>
             <input type="button" value="Login" onclick="window.location.href='/login'"/>
             <input type="button" value="Registration" onclick="window.location.href='/registration'"/>
         </div>

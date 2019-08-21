@@ -111,3 +111,24 @@ button[type=submit]:hover, input[type=file]:hover, input[type=button]:hover {
     background-color: #eeeeee;
     box-shadow: 0 1px 5px #3B666B;
 }
+
+.header {
+    width: 960px;
+    height: 60px;
+    background-color: #eeeeee;
+}
+
+.header input[type=button] {
+    float: right;
+    vertical-align: center;
+    margin: 15px 15px 0 0
+}
+
+#users {float:left;
+    margin-left: 15px ;
+}
+
+#search {
+    height: 22px !important;
+    font-size: 15px !important;
+}
