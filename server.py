@@ -409,11 +409,26 @@ def route_user_login():
                            is_matching=True)
 
 
-"""@app.route('/user/<user_id>')
-def user(user_id):
-    questions =
+@app.route('/user/<user_id>')
+def route_user(user_id):
+    user = data_manager.get_username_by_id(user_id)['name']
+    questions = data_manager.get_questions_by_user_id(user_id)
+    answers = data_manager.get_answers_by_user_id(user_id)
+    if answers:
+        answers = data_manager.trim_message(answers)
+    comments = data_manager.get_comments_by_user_id(user_id)
+    if comments:
+        comments = data_manager.trim_message(comments)
     return render_template('user.html',
-                           page_title='User information')"""
+                           page_title='User information',
+                           user=user,
+                           questions=questions,
+                           last_question=len(questions)-1,
+                           answers=answers,
+                           last_answer=len(answers)-1,
+                           comments=comments,
+                           last_comment=len(comments)-1)
+
 
 if __name__ == '__main__':
     app.run(
