@@ -7,10 +7,12 @@
 </head>
 
 <body>
-    <div class="inline">
-        <input type="button" value="Login" onclick="window.location.href='/login'"/>
-        <input type="button" value="Registration" onclick="window.location.href='/registration'"/>
-    </div>
+    {%  if page_title != 'Login' and page_title != 'Registration' %}
+        <div class="inline">
+            <input type="button" value="Login" onclick="window.location.href='/login'"/>
+            <input type="button" value="Registration" onclick="window.location.href='/registration'"/>
+        </div>
+    {%  endif %}
     <a href="/"><h1>AskMate</h1></a>
     {% block content %}{% endblock %}
 </body>

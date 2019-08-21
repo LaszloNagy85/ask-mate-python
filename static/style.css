@@ -72,7 +72,7 @@ textarea {
     padding-left: 30px;
 }
 
-button[type=submit], input[type=file], input[type=button] {
+button[type=submit], input[type=file], input[type=button], select {
     padding: 5px 10px;
     border-radius: 4px;
     background-color: #38a09c;
@@ -101,4 +101,13 @@ button[type=submit]:hover, input[type=file]:hover, input[type=button]:hover {
 
 #fix-size {width: 90px;
     height: 28px;
+}
+
+.box {border-radius: 2px;
+    width: 400px;
+    margin: auto;
+    padding: 30px 50px;
+    text-align: center;
+    background-color: #eeeeee;
+    box-shadow: 0 1px 5px #3B666B;
 }

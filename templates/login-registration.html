@@ -7,14 +7,20 @@
 {% block content %}
     <h2>{{ page_title }}</h2>
     <br>
-    <div>
+    <div class="box">
         <form action="{{ action }}" method="post" >
 
             <label for="username">Username:</label>
-            <input type="text" name="username" minlength="5">
+            <input type="text" name="username" minlength="5"><br><br>
             <label for="password">Password:</label>
-            <input type="password" name="password" minlength="7">
+            <input type="password" name="password" minlength="7"><br><br>
             <button type="submit">{{ button_text }}</button>
+            {%  if not is_matching %}
+                <p>Invalid credentials!</p>
+            {% endif %}
+            {%  if invalid_username %}
+                <p>Username is unavailable!</p>
+            {% endif %}
         </form>
     </div>
 {% endblock %}
