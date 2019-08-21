@@ -13,10 +13,29 @@ def get_all_data(cursor, table):
     return all_data
 
 
-# if the col_value is a string, use "'col_value'"
+# if the col_value is a string, use "'col_value'
+# use it only on question, answer, comment tables!
 @database_connection.connection_handler
 def get_columns_by_attribute(cursor, col_list, table, col_name, col_value):
     query_for_func = sql.SQL('SELECT {} FROM {} WHERE {} = {} ORDER BY submission_time').format(
+        sql.SQL(', ').join(map(sql.Identifier, col_list)),
+        sql.Identifier(table),
+        sql.Identifier(col_name),
+        sql.SQL(col_value))
+    cursor.execute(query_for_func)
+
+    if col_name == 'id':
+        data = cursor.fetchone()
+    else:
+        data = cursor.fetchall()
+
+    return data
+
+
+# copy of get_columns_by_attribute without order
+@database_connection.connection_handler
+def get_filtered_data(cursor, col_list, table, col_name, col_value):
+    query_for_func = sql.SQL('SELECT {} FROM {} WHERE {} = {}').format(
         sql.SQL(', ').join(map(sql.Identifier, col_list)),
         sql.Identifier(table),
         sql.Identifier(col_name),
