@@ -354,18 +354,30 @@ def search():
 
 @app.route('/registration', methods=['POST', 'GET'])
 def route_user_registration():
-    if request.method == 'POST':
-        user_name = request.form.get('user_name')
-        password = request.form.get('password')
-        hashed_password = data_manager.hash_password(password)
-        reg_date = util.get_timestamp()
-        data_manager.add_data(['name', 'password', 'registration_date'], [user_name, hashed_password, reg_date], 'user_info')
 
-        return redirect('/')
+    if request.method == 'POST':
+        user = data_manager.get_filtered_data(['name'], 'user_info', 'name', request.form.get('username'))
+        if not user:
+            user_name = request.form.get('username')
+            password = request.form.get('password')
+            hashed_password = data_manager.hash_password(password)
+            reg_date = util.get_timestamp()
+            data_manager.add_data(['name', 'password', 'registration_date'], [user_name, hashed_password, reg_date], 'user_info')
+
+            return redirect('/')
+        else:
+            return render_template('login-registration.html',
+                                   action=url_for('route_user_registration'),
+                                   button_text='Registration',
+                                   page_title='Registration',
+                                   invalid_username=True,
+                                   is_matching=True)
+
     return render_template('login-registration.html',
                            action=url_for('route_user_registration'),
-                           buton_text='Registration',
-                           page_title='Registration')
+                           button_text='Registration',
+                           page_title='Registration',
+                           is_matching=True)
 
 
 if __name__ == '__main__':
