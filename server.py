@@ -397,8 +397,15 @@ def route_user_login():
         if is_matching:
             return redirect('/')
         else:
-            return render_template('login-registration.html')
-    return render_template('login-registration.html')
+            return render_template('login-registration.html',
+                                   is_matching=is_matching,
+                                   button_text='Login',
+                                   page_title='Login',
+                                   invalid_username=False)
+    return render_template('login-registration.html',
+                           button_text='Login',
+                           page_title='Login',
+                           is_matching=True)
 
 
 if __name__ == '__main__':
