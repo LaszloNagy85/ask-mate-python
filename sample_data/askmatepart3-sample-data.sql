@@ -67,7 +67,8 @@ DROP SEQUENCE IF EXISTS public.user_info_id_seq;
 CREATE TABLE user_info (
     id serial NOT NULL,
     name text,
-    registration_time timestamp without time zone
+    password text,
+    registration_date timestamp without time zone
 );
 
 DROP TABLE IF EXISTS public.user_question;
@@ -325,9 +326,9 @@ INSERT INTO question_tag VALUES (0, 1);
 INSERT INTO question_tag VALUES (1, 3);
 INSERT INTO question_tag VALUES (2, 3);
 
-INSERT INTO user_info VALUES (1, 'foxi', '2019-08-20 12:00:04');
-INSERT INTO user_info VALUES (2, 'tengely', '2019-08-20 12:00:04');
-SELECT pg_catalog.setval('user_info_id_seq', 3, true);
+INSERT INTO user_info VALUES (1, 'foxi', 'asdfghj','2019-08-20 12:00:04');
+INSERT INTO user_info VALUES (2, 'tengely', 'adminadmin','2019-08-20 12:00:04');
+SELECT pg_catalog.setval('user_info_id_seq', 2, true);
 
 INSERT INTO user_question VALUES (1, 1);
 INSERT INTO user_answer VALUES (4, 2);
