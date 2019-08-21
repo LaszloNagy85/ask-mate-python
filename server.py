@@ -392,12 +392,13 @@ def route_user_login():
         session['username'] = request.form.get('username')
         user_name = request.form.get('username')
         password = request.form.get('password')
-        hashed_password = data_manager.get_data_from_user_db(['password'], 'user_info', 'name', user_name)
+        hashed_password = data_manager.get_filtered_data(['password'], 'user_info', 'name', [user_name])['password']
         is_matching = data_manager.verify_password(password, hashed_password)
         if is_matching:
             return redirect('/')
         else:
             return render_template('login-registration.html')
+    return render_template('login-registration.html')
 
 
 if __name__ == '__main__':
