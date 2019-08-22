@@ -38,7 +38,10 @@ def route_question(question_id):
     answers = data_manager.get_columns_by_attribute(ANSWER, 'answer', 'question_id', question_id)
     comment = data_manager.get_all_data('comment')
     username = session.get('username')
-    user_info = data_manager.get_user_activity(username)
+    if username:
+        user_info = data_manager.get_user_activity(username)
+    else:
+        user_info = {'username': '', 'user_id': '', 'question_ids': [], 'answer_ids': [], 'comment-ids': []}
 
     return render_template('question.html',
                            question=question,
@@ -285,6 +288,7 @@ def route_answer_update(question_id, answer_id):
 
     question = data_manager.get_columns_by_attribute(QUESTION, 'question', 'id', question_id)
     answers = data_manager.get_columns_by_attribute(ANSWER, 'answer', 'question_id', question_id)
+    comments = data_manager.get_all_data('comment')
     answer = data_manager.get_columns_by_attribute(['message', 'image'], 'answer', 'id', answer_id)
     username = session.get('username')
     user_id = data_manager.get_id_by_user(username)
@@ -297,6 +301,8 @@ def route_answer_update(question_id, answer_id):
                            stored_answer=answer['message'],
                            legend='Edit answer',
                            user_info={'username': username, 'user_id': user_id},
+                           comments=comments,
+                           comment_button='Add new comment'
                            )
 
 
