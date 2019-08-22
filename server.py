@@ -488,6 +488,16 @@ def route_logout():
     return redirect('/')
 
 
+@app.route('/list-users/')
+def route_list_users():
+    username = session.get('username')
+    users = data_manager.get_users()
+    return render_template('list-users.html',
+                           users=users,
+                           page_title='Users',
+                           username=username)
+
+
 if __name__ == '__main__':
     app.run(
         port=8000,

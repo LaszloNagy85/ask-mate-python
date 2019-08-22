@@ -381,3 +381,23 @@ def get_id_by_user(cursor, username):
 
     user_id = cursor.fetchone()
     return user_id
+
+
+@database_connection.connection_handler
+def get_users(cursor):
+    query_for_func = sql.SQL("""SELECT user_info.name, user_info.id,
+                                user_info.registration_date, COUNT(DISTINCT user_question.question_id) AS questions,
+                                COUNT(DISTINCT user_answer.answer_id) AS answers, COUNT(DISTINCT user_comment.comment_id) AS comments
+                                FROM user_info
+                                LEFT JOIN user_question ON
+                                user_info.id = user_question.user_id
+                                LEFT JOIN user_answer ON
+                                user_info.id = user_answer.user_id
+                                LEFT JOIN user_comment ON
+                                user_info.id = user_comment.user_id
+                                GROUP BY user_info.id
+                                """)
+    cursor.execute(query_for_func)
+    data = cursor.fetchall()
+
+    return data
