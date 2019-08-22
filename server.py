@@ -83,6 +83,10 @@ def route_new_answer(question_id):
 
     answer_id = data_manager.add_data(new_answer.keys(), list(new_answer.values()), 'answer')
 
+    username = session.get('username')
+    user_id = data_manager.get_id_by_user(username)['id']
+    data_manager.add_bind(['answer_id', 'user_id'], [answer_id, user_id], 'user_answer')
+
     return redirect(f'/question/{question_id}#{answer_id}')
 
 
@@ -122,6 +126,9 @@ def route_list_of_questions():
 @app.route('/add-question', methods=['GET', 'POST'])
 @login_required
 def route_question_add():
+    username = session.get('username')
+    user_id = data_manager.get_id_by_user(username)['id']
+
     if request.method == 'POST':
         image = data_manager.save_image(app.config['UPLOAD_FOLDER'], request.files)
 
@@ -135,11 +142,10 @@ def route_question_add():
         }
 
         generated_id = data_manager.add_data(question.keys(), list(question.values()), 'question')
+        data_manager.add_bind(['question_id', 'user_id'], [generated_id, user_id], 'user_question')
 
         return redirect(f'/question/{generated_id}')
 
-    username = session.get('username')
-    user_id = data_manager.get_id_by_user(username)
     return render_template('add-question.html',
                            question={},
                            form_url=url_for('route_question_add'),
@@ -171,7 +177,7 @@ def route_question_update(question_id):
 
     question = data_manager.get_columns_by_attribute(QUESTION, 'question', 'id', question_id)
     username = session.get('username')
-    user_id = data_manager.get_id_by_user(username)
+    user_id = data_manager.get_id_by_user(username)['id']
 
     return render_template('add-question.html',
                            question=question,
@@ -241,7 +247,7 @@ def all_questions():
     data = data_manager.get_all_sorted_questions(sort_by, direction)
     answers = data_manager.get_data_by_attributes(['id', 'question_id', 'message'], 'answer')
     username = session.get('username')
-    user_id = data_manager.get_id_by_user(username)
+    user_id = data_manager.get_id_by_user(username)['id']
 
     return render_template('list.html',
                            questions=data,
@@ -291,7 +297,7 @@ def route_answer_update(question_id, answer_id):
     comments = data_manager.get_all_data('comment')
     answer = data_manager.get_columns_by_attribute(['message', 'image'], 'answer', 'id', answer_id)
     username = session.get('username')
-    user_id = data_manager.get_id_by_user(username)
+    user_id = data_manager.get_id_by_user(username)['id']
 
     return render_template('question.html',
                            question=question,
@@ -317,7 +323,12 @@ def route_new_question_comment(question_id):
         'edited_count': 0,
     }
 
-    data_manager.add_data(new_comment.keys(), list(new_comment.values()), 'comment')
+    comment_id = data_manager.add_data(new_comment.keys(), list(new_comment.values()), 'comment')
+
+    username = session.get('username')
+    user_id = data_manager.get_id_by_user(username)['id']
+
+    data_manager.add_bind(['comment_id', 'user_id'], [comment_id, user_id], 'user_comment')
 
     return redirect(f'/question/{question_id}')
 
@@ -332,8 +343,13 @@ def route_new_answer_comment(answer_id):
         'submission_time': util.get_timestamp(),
         'edited_count': 0
     }
-    data_manager.add_data(new_comment.keys(), list(new_comment.values()), 'comment')
+    comment_id = data_manager.add_data(new_comment.keys(), list(new_comment.values()), 'comment')
     question_id = data_manager.get_columns_by_attribute(['question_id'], 'answer', 'id', answer_id)['question_id']
+
+    username = session.get('username')
+    user_id = data_manager.get_id_by_user(username)['id']
+
+    data_manager.add_bind(['comment_id', 'user_id'], [comment_id, user_id], 'user_comment')
 
     return redirect(f'/question/{question_id}')
 
@@ -381,7 +397,7 @@ def route_edit_comment(comment_id):
     answers = data_manager.get_columns_by_attribute(ANSWER, 'answer', 'question_id', str(question_id))
     comment = data_manager.get_columns_by_attribute(['message'], 'comment', 'id', comment_id)
     username = session.get('username')
-    user_id = data_manager.get_id_by_user(username)
+    user_id = data_manager.get_id_by_user(username)['id']
 
     return render_template('question.html',
                            question=question,
@@ -403,7 +419,7 @@ def search():
     last_question = len(questions) - 1
     last_answer = len(answers) - 1
     username = session.get('username')
-    user_id = data_manager.get_id_by_user(username)
+    user_id = data_manager.get_id_by_user(username)['id']
 
     return render_template('search.html',
                            page_title='Search results',
@@ -507,7 +523,7 @@ def route_logout():
 @login_required
 def route_list_users():
     username = session.get('username')
-    user_id = data_manager.get_id_by_user(username)
+    user_id = data_manager.get_id_by_user(username)['id']
     users = data_manager.get_users()
     return render_template('list-users.html',
                            users=users,
