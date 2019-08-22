@@ -123,6 +123,9 @@ def route_list_of_questions():
 @app.route('/add-question', methods=['GET', 'POST'])
 @login_required
 def route_question_add():
+    username = session.get('username')
+    user_id = data_manager.get_id_by_user(username)['id']
+
     if request.method == 'POST':
         image = data_manager.save_image(app.config['UPLOAD_FOLDER'], request.files)
 
@@ -136,11 +139,10 @@ def route_question_add():
         }
 
         generated_id = data_manager.add_data(question.keys(), list(question.values()), 'question')
+        data_manager.add_bind(['question_id', 'user_id'], [generated_id, user_id], 'user_question')
 
         return redirect(f'/question/{generated_id}')
 
-    username = session.get('username')
-    user_id = data_manager.get_id_by_user(username)['id']
     return render_template('add-question.html',
                            question={},
                            form_url=url_for('route_question_add'),
