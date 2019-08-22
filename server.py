@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session
+from functools import wraps
 
 import data_manager
 import util
@@ -19,6 +20,16 @@ ANSWER = ['id', 'submission_time', 'vote_number', 'question_id', 'message', 'ima
 COMMENT = ['id', 'question_id', 'answer_id', 'message', 'submission_time', 'edited_count']
 SORT_OPTIONS = ['submission_time', 'view_number', 'vote_number', 'title']
 SORT_TITLES = ['Submission time', 'View number', 'Vote number', 'Title']
+
+
+def login_required(func):
+    @wraps(func)
+    def wrap(*args, **kwargs):
+        if 'username' in session:
+            return func(*args, **kwargs)
+        else:
+            return redirect(url_for('route_user_login'))
+    return wrap
 
 
 @app.route('/question/<question_id>/')
