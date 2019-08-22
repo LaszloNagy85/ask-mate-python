@@ -326,3 +326,58 @@ def trim_message(data):
         else:
             pass
     return data
+
+
+@database_connection.connection_handler
+def get_col_by_user(cursor, username, col, conn_table, table_, table_id):
+    query_for_func = sql.SQL('''SELECT {col}
+                                FROM user_info
+                                LEFT JOIN {conn_table}
+                                    ON user_info.id = user_id
+                                LEFT JOIN {table_}
+                                    ON {table_id} = {table_}.id
+                                WHERE user_info.name = {username}
+                                
+                            ''').format(
+                                        col=sql.Identifier(col),
+                                        conn_table=sql.Identifier(conn_table),
+                                        table_=sql.Identifier(table_),
+                                        table_id=sql.SQL(table_id),
+                                        username=sql.SQL(username)
+    )
+    cursor.execute(query_for_func)
+    col_by_user = cursor.fetchall()
+
+    return col_by_user
+
+
+def get_user_activity(username):
+    user_id = get_id_by_user(username)['id']
+    username = f"'{username}'"
+    questions_dict = get_col_by_user(username, 'question_id', 'user_question', 'question', 'question_id')
+    questions = []
+    for question in questions_dict:
+        questions.append(question['question_id'])
+    answers_dict = get_col_by_user(username, 'answer_id', 'user_answer', 'answer', 'answer_id')
+    answers = []
+    for answer in answers_dict:
+        answers.append(answer['answer_id'])
+    comments_dict = get_col_by_user(username, 'comment_id', 'user_comment', 'comment', 'comment_id')
+    comments = []
+    for comment in comments_dict:
+        comments.append(comment['comment_id'])
+
+    return {'username': username, 'user_id': user_id, 'question_ids': questions, 'answer_ids': answers, 'comment_ids': comments}
+
+
+@database_connection.connection_handler
+def get_id_by_user(cursor, username):
+    cursor.execute('''
+                    SELECT id
+                    FROM user_info
+                    WHERE %(username)s = name
+                    ''',
+                   {'username': username})
+
+    user_id = cursor.fetchone()
+    return user_id
