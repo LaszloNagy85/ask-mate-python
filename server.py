@@ -489,6 +489,7 @@ def route_logout():
 
 
 @app.route('/list-users/')
+@login_required
 def route_list_users():
     username = session.get('username')
     users = data_manager.get_users()
