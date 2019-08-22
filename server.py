@@ -104,7 +104,9 @@ def route_list_of_questions():
     data = data_manager.get_sorted_data(sort_by, direction)
     answers = data_manager.get_data_by_attributes(['id', 'question_id', 'message'], 'answer')
     username = session.get('username')
-    user_id = data_manager.get_id_by_user(username)['id']
+    if username:
+        user_id = data_manager.get_id_by_user(username)['id']
+    else: user_id = ''
 
     return render_template('list.html',
                            questions=data,
