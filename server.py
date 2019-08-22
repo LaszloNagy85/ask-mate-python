@@ -432,7 +432,6 @@ def route_user_registration():
 @app.route('/login', methods=['POST', 'GET'])
 def route_user_login():
     if request.method == 'POST':
-        session['username'] = request.form.get('username')
         user_name = request.form.get('username')
         password = request.form.get('password')
         get_password = data_manager.get_filtered_data(['password'], 'user_info', 'name', [user_name])
@@ -440,6 +439,7 @@ def route_user_login():
             hashed_password = get_password['password']
             is_matching = data_manager.verify_password(password, hashed_password)
             if is_matching:
+                session['username'] = request.form.get('username')
                 return redirect('/')
 
         return render_template('login-registration.html',
