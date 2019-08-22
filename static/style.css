@@ -132,3 +132,23 @@ button[type=submit]:hover, input[type=file]:hover, input[type=button]:hover {
     height: 22px !important;
     font-size: 15px !important;
 }
+
+th {
+    color: #276965;
+    padding-bottom: 10px;
+}
+
+tr:nth-child(even) {background-color: #eeeeee}
+
+table {width:940px;
+    margin: auto;
+    text-align: center;
+}
+
+td a {text-decoration: none;
+    color: dimgray;
+    font-weight: bold;
+}
+
+table td { padding: 5px
+}
