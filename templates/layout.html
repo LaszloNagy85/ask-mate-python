@@ -7,11 +7,20 @@
 </head>
 
 <body>
-    {%  if page_title != 'Login' and page_title != 'Registration' %}
+    {%  if page_title != 'Login' and page_title != 'Registration' and not user_info.username %}
         <div class="header">
-            <input type="button" value="Show users" id="users" onclick="window.location.href='/list-users/'"/>
+            {% if user_info.username %}
+                <input type="button" value="Show users" id="users" onclick="window.location.href='/list-users/'"/>
+            {% endif %}
             <input type="button" value="Login" onclick="window.location.href='/login'"/>
             <input type="button" value="Registration" onclick="window.location.href='/registration'"/>
+        </div>
+    {%  endif %}
+    {%  if page_title != 'Login' and page_title != 'Registration' and user_info.username %}
+        <div class="header">
+            <input type="button" value="Show users" id="users" onclick="window.location.href='/list-users/'"/>
+            <input type="button" value="Logout" onclick="window.location.href='/logout'"/>
+            <input type="button" value="{{ user_info.username }}" onclick="window.location.href='/user/{{ user_info.user_id }}'"/>
         </div>
     {%  endif %}
     <a href="/"><h1>AskMate</h1></a>
