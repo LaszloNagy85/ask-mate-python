@@ -367,6 +367,7 @@ def get_user_activity(username):
     for comment in comments_dict:
         comments.append(comment['comment_id'])
 
+    username = username.replace("'", "")
     return {'username': username, 'user_id': user_id, 'question_ids': questions, 'answer_ids': answers, 'comment_ids': comments}
 
 
