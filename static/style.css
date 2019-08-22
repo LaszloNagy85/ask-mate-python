@@ -69,7 +69,7 @@ textarea {
 }
 
 .delete-button {
-    padding-left: 30px;
+    padding-left: 250px;
 }
 
 button[type=submit], input[type=file], input[type=button], select {
@@ -152,3 +152,5 @@ td a {text-decoration: none;
 
 table td { padding: 5px
 }
+
+.placeholder {width: 479px}

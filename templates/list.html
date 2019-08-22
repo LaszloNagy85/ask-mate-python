@@ -12,7 +12,11 @@
         </form>
     </div>
     <h2>Questions</h2>
-    <input type="button" value="Ask a question" onclick="window.location.href='/add-question'"/>
+    {% if user_info.username %}
+        <input type="button" value="Ask a question" onclick="window.location.href='/add-question'"/>
+    {% else %}
+        <br>
+    {% endif %}
     <br><br>
         <form action={{ form_action }} method="GET">
         <label for="sort"> Sort Questions by:</label>
