@@ -265,12 +265,17 @@ def route_answer_update(question_id, answer_id):
             'message': request.form.get('message'),
             'image': image.filename if image else stored_data['image']
         }
+        username = session.get('username')
+        user_info = data_manager.get_user_activity(username)
+        if answer_id in user_info['answer_ids']:
 
-        data_manager.update_data(['message', 'submission_time', 'image'],
-                                 [answer['message'], answer['submission_time'],
-                                 answer['image']], 'answer',
-                                 answer_id)
-        return redirect(f'/question/{question_id}#{answer_id}')
+            data_manager.update_data(['message', 'submission_time', 'image'],
+                                     [answer['message'], answer['submission_time'],
+                                     answer['image']], 'answer',
+                                     answer_id)
+            return redirect(f'/question/{question_id}#{answer_id}')
+        else:
+            return render_template('menta.html')
 
     question = data_manager.get_columns_by_attribute(QUESTION, 'question', 'id', question_id)
     answers = data_manager.get_columns_by_attribute(ANSWER, 'answer', 'question_id', question_id)
