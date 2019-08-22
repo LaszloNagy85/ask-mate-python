@@ -168,9 +168,14 @@ def route_question_update(question_id):
             'message': request.form.get('message'),
             'image': image.filename if image else stored_data['image']
         }
+        username = session.get('username')
+        user_info = data_manager.get_user_activity(username)
 
-        data_manager.update_data(['title', 'message'], [question['title'], question['message']], 'question', question_id)
-        return redirect(f'/question/{question_id}')
+        if question_id in user_info['question_ids']:
+            data_manager.update_data(['title', 'message'], [question['title'], question['message']], 'question', question_id)
+            return redirect(f'/question/{question_id}')
+        else:
+            return render_template('menta.html')
 
     question = data_manager.get_columns_by_attribute(QUESTION, 'question', 'id', question_id)
     username = session.get('username')
@@ -207,10 +212,16 @@ def route_delete_question(question_id):
         question = data_manager.get_columns_by_attribute(['image'], 'question', 'id', question_id)
         answers = data_manager.get_columns_by_attribute(['image'], 'answer', 'question_id', question_id)
 
-        data_manager.delete_from_db(question_id, 'question')
+        username = session.get('username')
+        user_info = data_manager.get_user_activity(username)
 
-        image_filenames = [question['image']] + [answer['image'] for answer in answers]
-        data_manager.delete_image(image_filenames, app.config['UPLOAD_FOLDER'])
+        if question_id in user_info['question_ids']:
+            data_manager.delete_from_db(question_id, 'question')
+
+            image_filenames = [question['image']] + [answer['image'] for answer in answers]
+            data_manager.delete_image(image_filenames, app.config['UPLOAD_FOLDER'])
+        else:
+            return render_template('menta.html')
 
         return redirect('/')
 
@@ -222,10 +233,16 @@ def route_delete_answer(answer_id):
         data_of_answer = data_manager.get_columns_by_attribute(['question_id', 'image'], 'answer', 'id', answer_id)
         question_id = data_of_answer['question_id']
 
-        data_manager.delete_from_db(answer_id, 'answer')
+        username = session.get('username')
+        user_info = data_manager.get_user_activity(username)
 
-        if data_of_answer['image']:
-            os.remove(os.path.join(app.config['UPLOAD_FOLDER'], data_of_answer['image']))
+        if answer_id in user_info['answer_ids']:
+            data_manager.delete_from_db(answer_id, 'answer')
+
+            if data_of_answer['image']:
+                os.remove(os.path.join(app.config['UPLOAD_FOLDER'], data_of_answer['image']))
+        else:
+            return render_template('menta.html')
 
     return redirect(f'/question/{question_id}')
 
@@ -285,9 +302,11 @@ def route_answer_update(question_id, answer_id):
                                      [answer['message'], answer['submission_time'],
                                      answer['image']], 'answer',
                                      answer_id)
-            return redirect(f'/question/{question_id}#{answer_id}')
         else:
             return render_template('menta.html')
+
+        return redirect(f'/question/{question_id}#{answer_id}')
+
 
     question = data_manager.get_columns_by_attribute(QUESTION, 'question', 'id', question_id)
     answers = data_manager.get_columns_by_attribute(ANSWER, 'answer', 'question_id', question_id)
@@ -359,7 +378,13 @@ def route_delete_comment(comment_id):
         else:
             question_id = data_manager.get_columns_by_attribute(['question_id'], 'answer', 'id', str(ids['answer_id']))['question_id']
 
-        data_manager.delete_from_db(comment_id, 'comment')
+        username = session.get('username')
+        user_info = data_manager.get_user_activity(username)
+
+        if comment_id in user_info['comment_ids']:
+            data_manager.delete_from_db(comment_id, 'comment')
+        else:
+            return render_template('menta.html')
 
     return redirect(f'/question/{question_id}')
 
@@ -382,9 +407,17 @@ def route_edit_comment(comment_id):
             'submission_time': util.get_timestamp(),
             'edited_count': edited_count + 1
         }
-        data_manager.update_data(['message', 'submission_time', 'edited_count'],
-                                 [comment['message'], comment['submission_time'], comment['edited_count']],
-                                 'comment', comment_id)
+
+        username = session.get('username')
+        user_info = data_manager.get_user_activity(username)
+
+        if comment_id in user_info['comment_ids']:
+            data_manager.update_data(['message', 'submission_time', 'edited_count'],
+                                     [comment['message'], comment['submission_time'], comment['edited_count']],
+                                     'comment', comment_id)
+        else:
+            return render_template('menta.html')
+
         return redirect(f'/question/{question_id}#comment-{comment_id}')
 
     question = data_manager.get_columns_by_attribute(QUESTION, 'question', 'id', str(question_id))
