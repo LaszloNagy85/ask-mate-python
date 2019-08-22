@@ -80,6 +80,10 @@ def route_new_answer(question_id):
 
     answer_id = data_manager.add_data(new_answer.keys(), list(new_answer.values()), 'answer')
 
+    username = session.get('username')
+    user_id = data_manager.get_id_by_user(username)['id']
+    data_manager.add_bind(['answer_id', 'user_id'], [answer_id, user_id], 'user_answer')
+
     return redirect(f'/question/{question_id}#{answer_id}')
 
 
@@ -311,7 +315,12 @@ def route_new_question_comment(question_id):
         'edited_count': 0,
     }
 
-    data_manager.add_data(new_comment.keys(), list(new_comment.values()), 'comment')
+    comment_id = data_manager.add_data(new_comment.keys(), list(new_comment.values()), 'comment')
+
+    username = session.get('username')
+    user_id = data_manager.get_id_by_user(username)['id']
+
+    data_manager.add_bind(['comment_id', 'user_id'], [comment_id, user_id], 'user_comment')
 
     return redirect(f'/question/{question_id}')
 
@@ -326,8 +335,13 @@ def route_new_answer_comment(answer_id):
         'submission_time': util.get_timestamp(),
         'edited_count': 0
     }
-    data_manager.add_data(new_comment.keys(), list(new_comment.values()), 'comment')
+    comment_id = data_manager.add_data(new_comment.keys(), list(new_comment.values()), 'comment')
     question_id = data_manager.get_columns_by_attribute(['question_id'], 'answer', 'id', answer_id)['question_id']
+
+    username = session.get('username')
+    user_id = data_manager.get_id_by_user(username)['id']
+
+    data_manager.add_bind(['comment_id', 'user_id'], [comment_id, user_id], 'user_comment')
 
     return redirect(f'/question/{question_id}')
 
