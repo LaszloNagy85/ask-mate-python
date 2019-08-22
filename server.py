@@ -63,6 +63,7 @@ def route_question_counted(question_id):
 
 
 @app.route('/question/<question_id>/new-answer', methods=['POST'])
+@login_required
 def route_new_answer(question_id):
     image = data_manager.save_image(app.config['UPLOAD_FOLDER'], request.files)
 
@@ -109,6 +110,7 @@ def route_list_of_questions():
 
 
 @app.route('/add-question', methods=['GET', 'POST'])
+@login_required
 def route_question_add():
     if request.method == 'POST':
         image = data_manager.save_image(app.config['UPLOAD_FOLDER'], request.files)
@@ -135,6 +137,7 @@ def route_question_add():
 
 
 @app.route('/question/<question_id>/edit', methods=['GET', 'POST'])
+@login_required
 def route_question_update(question_id):
     if request.method == 'POST':
         stored_data = data_manager.get_columns_by_attribute(QUESTION, 'question', 'id', question_id)
@@ -164,6 +167,7 @@ def route_question_update(question_id):
 
 
 @app.route('/vote/<question_id>/<vote_type>/<answer_id>')
+@login_required
 def vote(question_id, vote_type, answer_id):
     if answer_id == 'None':
         table = 'question'
@@ -177,6 +181,7 @@ def vote(question_id, vote_type, answer_id):
 
 
 @app.route('/question/<question_id>/delete/', methods=['POST'])
+@login_required
 def route_delete_question(question_id):
     if request.method == 'POST':
 
@@ -192,6 +197,7 @@ def route_delete_question(question_id):
 
 
 @app.route('/answer/<answer_id>/delete/', methods=['POST'])
+@login_required
 def route_delete_answer(answer_id):
     if request.method == 'POST':
         data_of_answer = data_manager.get_columns_by_attribute(['question_id', 'image'], 'answer', 'id', answer_id)
@@ -235,6 +241,7 @@ def all_questions():
 
 
 @app.route('/question/<question_id>/<answer_id>/edit', methods=['GET', 'POST'])
+@login_required
 def route_answer_update(question_id, answer_id):
     if request.method == 'POST':
         stored_data = data_manager.get_columns_by_attribute(['image'], 'answer', 'id', answer_id)
@@ -268,6 +275,7 @@ def route_answer_update(question_id, answer_id):
 
 
 @app.route('/question/<question_id>/new_comment', methods=['POST'])
+@login_required
 def route_new_question_comment(question_id):
 
     new_comment = {
@@ -283,6 +291,7 @@ def route_new_question_comment(question_id):
 
 
 @app.route('/answer/<answer_id>/new_comment', methods=['POST'])
+@login_required
 def route_new_answer_comment(answer_id):
 
     new_comment = {
@@ -298,6 +307,7 @@ def route_new_answer_comment(answer_id):
 
 
 @app.route('/comments/<comment_id>/delete/', methods=['POST'])
+@login_required
 def route_delete_comment(comment_id):
     if request.method == 'POST':
         ids = data_manager.get_columns_by_attribute(['question_id', 'answer_id'], 'comment', 'id', comment_id)
@@ -313,6 +323,7 @@ def route_delete_comment(comment_id):
 
 
 @app.route('/comments/<comment_id>/edit/', methods=['POST', 'GET'])
+@login_required
 def route_edit_comment(comment_id):
     ids = data_manager.get_columns_by_attribute(['question_id', 'answer_id'], 'comment', 'id', comment_id)
     if ids['question_id'] is not None:
@@ -421,6 +432,7 @@ def route_user_login():
 
 
 @app.route('/user/<user_id>')
+@login_required
 def route_user(user_id):
     user = data_manager.get_username_by_id(user_id)['name']
     questions = data_manager.get_questions_by_user_id(user_id)
