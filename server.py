@@ -176,7 +176,7 @@ def route_question_update(question_id):
         username = session.get('username')
         user_info = data_manager.get_user_activity(username)
 
-        if question_id in user_info['question_ids']:
+        if int(question_id) in user_info['question_ids']:
             data_manager.update_data(['title', 'message'], [question['title'], question['message']], 'question', question_id)
             return redirect(f'/question/{question_id}')
         else:
@@ -220,7 +220,7 @@ def route_delete_question(question_id):
         username = session.get('username')
         user_info = data_manager.get_user_activity(username)
 
-        if question_id in user_info['question_ids']:
+        if int(question_id) in user_info['question_ids']:
             data_manager.delete_from_db(question_id, 'question')
 
             image_filenames = [question['image']] + [answer['image'] for answer in answers]
@@ -241,7 +241,7 @@ def route_delete_answer(answer_id):
         username = session.get('username')
         user_info = data_manager.get_user_activity(username)
 
-        if answer_id in user_info['answer_ids']:
+        if int(answer_id) in user_info['answer_ids']:
             data_manager.delete_from_db(answer_id, 'answer')
 
             if data_of_answer['image']:
@@ -266,7 +266,10 @@ def all_questions():
     data = data_manager.get_all_sorted_questions(sort_by, direction)
     answers = data_manager.get_data_by_attributes(['id', 'question_id', 'message'], 'answer')
     username = session.get('username')
-    user_id = data_manager.get_id_by_user(username)['id']
+    if username:
+        user_id = data_manager.get_id_by_user(username)['id']
+    else:
+        user_id = ''
 
     return render_template('list.html',
                            questions=data,
@@ -301,7 +304,7 @@ def route_answer_update(question_id, answer_id):
         }
         username = session.get('username')
         user_info = data_manager.get_user_activity(username)
-        if answer_id in user_info['answer_ids']:
+        if int(answer_id) in user_info['answer_ids']:
 
             data_manager.update_data(['message', 'submission_time', 'image'],
                                      [answer['message'], answer['submission_time'],
@@ -389,7 +392,7 @@ def route_delete_comment(comment_id):
         username = session.get('username')
         user_info = data_manager.get_user_activity(username)
 
-        if comment_id in user_info['comment_ids']:
+        if int(comment_id) in user_info['comment_ids']:
             data_manager.delete_from_db(comment_id, 'comment')
         else:
             return render_template('menta.html')
@@ -419,7 +422,7 @@ def route_edit_comment(comment_id):
         username = session.get('username')
         user_info = data_manager.get_user_activity(username)
 
-        if comment_id in user_info['comment_ids']:
+        if int(comment_id) in user_info['comment_ids']:
             data_manager.update_data(['message', 'submission_time', 'edited_count'],
                                      [comment['message'], comment['submission_time'], comment['edited_count']],
                                      'comment', comment_id)
