@@ -477,6 +477,12 @@ def route_user(user_id):
                            )
 
 
+@app.route('/logout')
+def route_logout():
+    session.pop('username')
+    return redirect('/')
+
+
 if __name__ == '__main__':
     app.run(
         port=8000,
