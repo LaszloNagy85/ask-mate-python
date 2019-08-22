@@ -84,7 +84,10 @@ def route_new_answer(question_id):
     answer_id = data_manager.add_data(new_answer.keys(), list(new_answer.values()), 'answer')
 
     username = session.get('username')
-    user_id = data_manager.get_id_by_user(username)['id']
+    if username:
+        user_id = data_manager.get_id_by_user(username)['id']
+    else:
+        user_id = ''
     data_manager.add_bind(['answer_id', 'user_id'], [answer_id, user_id], 'user_answer')
 
     return redirect(f'/question/{question_id}#{answer_id}')
@@ -106,7 +109,8 @@ def route_list_of_questions():
     username = session.get('username')
     if username:
         user_id = data_manager.get_id_by_user(username)['id']
-    else: user_id = ''
+    else:
+        user_id = ''
 
     return render_template('list.html',
                            questions=data,
@@ -312,7 +316,6 @@ def route_answer_update(question_id, answer_id):
 
         return redirect(f'/question/{question_id}#{answer_id}')
 
-
     question = data_manager.get_columns_by_attribute(QUESTION, 'question', 'id', question_id)
     answers = data_manager.get_columns_by_attribute(ANSWER, 'answer', 'question_id', question_id)
     comments = data_manager.get_all_data('comment')
@@ -454,7 +457,10 @@ def search():
     last_question = len(questions) - 1
     last_answer = len(answers) - 1
     username = session.get('username')
-    user_id = data_manager.get_id_by_user(username)['id']
+    if username:
+        user_id = data_manager.get_id_by_user(username)['id']
+    else:
+        user_id = ''
 
     return render_template('search.html',
                            page_title='Search results',
