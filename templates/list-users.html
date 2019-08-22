@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+
+    <h2>{{ page_title }}</h2>
+    <table>
+        <tr>
+            <th>Username</th>
+            <th>Registration date</th>
+            <th>Questions</th>
+            <th>Answers</th>
+            <th>Comments</th>
+        </tr>
+    {% for user in users %}
+        <tr>
+            <td><a href="/user/{{ user.id }}">{{ user.name }}</a></td>
+            <td>{{ user.registration_date.strftime("%Y-%m-%d %H:%M") }}</td>
+            <td>{{ user.questions }}</td>
+            <td>{{ user.answers }}</td>
+            <td>{{ user.comments }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+{% endblock %}
